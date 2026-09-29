@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/Automations.tsx","./src/Flow.tsx","./src/ModelContext.tsx","./src/ModelContextDiff.tsx","./src/ModelTest.tsx","./src/SemanticContextTest.tsx","./src/SessionHistory.tsx","./src/TaskEvents.tsx","./src/TaskView.tsx","./src/Workbench.tsx","./src/api.ts","./src/components.tsx","./src/main.tsx"],"version":"5.9.3"}

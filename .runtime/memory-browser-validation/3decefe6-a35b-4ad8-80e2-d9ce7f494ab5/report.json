@@ -1,0 +1,15 @@
+{
+  "status": "failed",
+  "root": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-browser-validation/3decefe6-a35b-4ad8-80e2-d9ce7f494ab5",
+  "seed": {
+    "memory_id": "4bfd5b02-5c3d-414e-a0f7-169549c0d6fc",
+    "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-browser-validation/3decefe6-a35b-4ad8-80e2-d9ce7f494ab5/protocol.md",
+    "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5"
+  },
+  "mock_used": false,
+  "simulation_used": false,
+  "console_errors": [],
+  "mobile_overflow": false,
+  "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('任务目标', { exact: true })\u001b[22m\n",
+  "visible_text_at_failure": "robot / agent\nFLOW OBSERVER\nR\n机器人 Agent 框架\n本地运行账本\n工作空间\n任务协作\n运行总览\n任务流程\n资源占用\n数据与记忆\n模型记录\n账本查询已连接\n\n操作请求经应用服务提交\n\n收起侧栏\n工作空间\n/\n任务协作\n应用操作 · 独立凭据\nAPI 已连接\n实际账本 · 观测时间\n2026/9/22 02:56:28\n任务协作\n\n完善目标、检查计划，再交给执行端。模型回答和控制回执分别留痕。\n\n应用操作凭据\n重新连接\n应用服务已连接\n目标与上下文\n机器人命名空间\n任务目标\n创建会话\n恢复已有会话\n读取会话\n计划与执行\n\n模型调用由按钮触发。生成计划不会执行任务。\n\n生成计划草稿\n\n目标分析完成后可生成草稿。待取证内容会保留在规划上下文中。\n\nRobot Agent Framework\n真实记录 · 可追溯执行 · 明确未知\nObserver API v1"
+}

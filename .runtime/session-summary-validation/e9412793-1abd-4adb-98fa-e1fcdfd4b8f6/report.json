@@ -1,0 +1,180 @@
+{
+  "large_history": false,
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "status": "passed",
+  "task_id": "6e3491ad-5cbf-4a24-b111-83436d34902c",
+  "summary": {
+    "id": "d5d7854a-5b94-4149-99e5-d932605ae851",
+    "session_id": "047c95f4-4709-455a-864f-5b55f72afc96",
+    "source_revision": 5,
+    "covered_turns": [
+      {
+        "id": "4a61457e-ee3a-49bd-b9be-ae03625edcce",
+        "record_hash": "6347f218737ae0c00585a21394e8e620490bc1798035d0d7f8f5e233265a7b10"
+      },
+      {
+        "id": "790b1e1a-1cc4-41b5-8697-7e16e748e710",
+        "record_hash": "6b2c2ec4399dc735057eac2a94c352728c6d13dcd2291237aae9c5d8ed37d8e3"
+      },
+      {
+        "id": "55631cca-497f-4ca0-b659-9dd8981ff2cb",
+        "record_hash": "d62bb26e42967ae4fb45dcf4c95d420fc84c79c311f7932d118ad046d19e592c"
+      }
+    ],
+    "pinned_turn_ids": [
+      "97d48936-2465-46fa-995c-0f1353b70965"
+    ],
+    "keep_recent": 2,
+    "points": [
+      {
+        "text": "任务要求归档指定协议文档并验证字节，需依次使用 file.ingest 和 asset.verify。系统资产库存储位置已配置，无须询问其他目标路径，且不涉及机器人运动。",
+        "turn_ids": [
+          "4a61457e-ee3a-49bd-b9be-ae03625edcce"
+        ]
+      },
+      {
+        "text": "唯一需要归档的实际源文件路径为 /home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/session-summary-validation/e9412793-1abd-4adb-98fa-e1fcdfd4b8f6/protocol.md，指定的 SHA256 校验和为 f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5。",
+        "turn_ids": [
+          "790b1e1a-1cc4-41b5-8697-7e16e748e710"
+        ]
+      },
+      {
+        "text": "提供的“技能接入协议”原文（含注册契约、请求响应、恢复控制等规范）仅作为项目背景信息，明确声明不是额外执行任务。",
+        "turn_ids": [
+          "55631cca-497f-4ca0-b659-9dd8981ff2cb"
+        ]
+      }
+    ],
+    "chunks": [
+      {
+        "index": 0,
+        "model_response_id": "e35d1bd7-3a98-4866-9c6e-e2ba9a4c7612",
+        "source_parts": [
+          {
+            "turn_id": "4a61457e-ee3a-49bd-b9be-ae03625edcce",
+            "start": 0,
+            "end": 85,
+            "content_hash": "b8f137e044daf81591d7cc38f5b17933c06e8b36393b130c50e3bc70974ec92a"
+          },
+          {
+            "turn_id": "790b1e1a-1cc4-41b5-8697-7e16e748e710",
+            "start": 0,
+            "end": 243,
+            "content_hash": "27ebb662dd596d0a3f7e7aee95adb42fd7f1c3c3cba19e48dd29d3ae26f75d1f"
+          },
+          {
+            "turn_id": "55631cca-497f-4ca0-b659-9dd8981ff2cb",
+            "start": 0,
+            "end": 1305,
+            "content_hash": "d1c4ce709d6511c6a996b6b7dcc5b8e0b014185fd78a32853c28a9d060f32078"
+          }
+        ]
+      }
+    ],
+    "model_response_id": "e35d1bd7-3a98-4866-9c6e-e2ba9a4c7612",
+    "model_response_ids": [
+      "e35d1bd7-3a98-4866-9c6e-e2ba9a4c7612"
+    ],
+    "summary_run_id": "1d3ca2d6-b7a6-443a-9e4f-4fda7b61a575",
+    "created_at": 1790018505.4191859,
+    "version": 2,
+    "content_authority": "model_summary_not_execution_evidence"
+  },
+  "actual_result": {
+    "evidence": [
+      {
+        "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+        "source": "asset:319a5193-534f-4edd-885d-8d9ba106603b"
+      }
+    ],
+    "execution_id": "48f44e9c-3627-47da-a181-680c38b4f66a",
+    "output": {
+      "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+      "size": 2669,
+      "verified": true
+    },
+    "quiescent": true,
+    "status": "succeeded"
+  },
+  "source_bytes": 7063,
+  "summary_bytes": 1285,
+  "summary_response_id": "chatcmpl-8e7d450a-4fcb-9495-98cb-8d7bd87c50c4",
+  "planning_response_id": "chatcmpl-3d8d19f0-eaa1-9170-a0c5-f42793ef9864",
+  "context_manifest": {
+    "dropped": [],
+    "estimated_input_tokens": 8236,
+    "estimator": "utf8_bytes_v1",
+    "id": "2c4d40c1-bfe2-4f0b-9afd-946fb73a3928",
+    "included": [
+      "goal",
+      "capabilities",
+      "session",
+      "session-summary"
+    ],
+    "input_token_limit": 32768,
+    "phase": "planning",
+    "renderer_version": "role-aware-v1",
+    "request_id": "b3556551-2161-4300-abe1-75c7922a1b7c",
+    "reserved_output_tokens": 2048,
+    "sources": [
+      {
+        "authority": "operator",
+        "evidence_ids": [],
+        "id": "goal",
+        "metadata": {},
+        "source": "goal_context"
+      },
+      {
+        "authority": "framework",
+        "evidence_ids": [],
+        "id": "capabilities",
+        "metadata": {},
+        "source": "skill_registry"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session",
+        "metadata": {
+          "revision": 7,
+          "session_id": "047c95f4-4709-455a-864f-5b55f72afc96",
+          "snapshot_id": null
+        },
+        "source": "session_ledger"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session-summary",
+        "metadata": {
+          "covered_turns": [
+            {
+              "id": "4a61457e-ee3a-49bd-b9be-ae03625edcce",
+              "record_hash": "6347f218737ae0c00585a21394e8e620490bc1798035d0d7f8f5e233265a7b10"
+            },
+            {
+              "id": "790b1e1a-1cc4-41b5-8697-7e16e748e710",
+              "record_hash": "6b2c2ec4399dc735057eac2a94c352728c6d13dcd2291237aae9c5d8ed37d8e3"
+            },
+            {
+              "id": "55631cca-497f-4ca0-b659-9dd8981ff2cb",
+              "record_hash": "d62bb26e42967ae4fb45dcf4c95d420fc84c79c311f7932d118ad046d19e592c"
+            }
+          ],
+          "model_response_id": "e35d1bd7-3a98-4866-9c6e-e2ba9a4c7612",
+          "model_response_ids": [
+            "e35d1bd7-3a98-4866-9c6e-e2ba9a4c7612"
+          ],
+          "pinned_turn_ids": [
+            "97d48936-2465-46fa-995c-0f1353b70965"
+          ],
+          "record_hash": "70951b3aa7fa2923a77939dce77094e1be0644d63dfc6d470d005cf3330f72ab",
+          "summary_id": "d5d7854a-5b94-4149-99e5-d932605ae851"
+        },
+        "source": "session_summary"
+      }
+    ]
+  }
+}

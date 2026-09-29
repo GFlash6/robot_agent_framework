@@ -1,0 +1,148 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "source": "docs/SKILL_PROTOCOL.md",
+  "expected_sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+  "memory_id": "c7191d8c-519c-460a-93c4-3755feba905c",
+  "expired_memory_command": {
+    "command_id": "f0e76fb0b9ef2ba412a7da17cbe839e8ae06f94b076c32948b99423b5ee14dc4",
+    "status": "rejected",
+    "error": {
+      "code": "INVALID_STATE",
+      "message": "context memory expired"
+    }
+  },
+  "status": "passed",
+  "session_id": "8d447e02-0c8c-45d9-ae37-d81ebe01f727",
+  "task_id": "fa250cab-0271-41ae-8918-c77f7ae66ae3",
+  "plan": {
+    "steps": [
+      {
+        "id": "ingest",
+        "skill": "file.ingest",
+        "args": {
+          "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-validation/db95b834-a6ec-4664-95fd-fa973b7ee20b/skill-protocol.md",
+          "metadata": {
+            "kind": "document",
+            "encoding": "utf8",
+            "source": "memory-selected-document",
+            "robot_id": "r1"
+          }
+        },
+        "deps": []
+      },
+      {
+        "id": "verify",
+        "skill": "asset.verify",
+        "args": {
+          "asset_id": {
+            "$ref": "ingest.asset_id"
+          }
+        },
+        "deps": [
+          "ingest"
+        ]
+      }
+    ],
+    "verification": "verify"
+  },
+  "actual_result": {
+    "evidence": [
+      {
+        "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+        "source": "asset:4bbc0c6c-7dbd-439b-8fea-001d6e5416fe"
+      }
+    ],
+    "execution_id": "f07103b0-92f7-4e46-8dc0-992e1e06c0b5",
+    "output": {
+      "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+      "size": 2669,
+      "verified": true
+    },
+    "quiescent": true,
+    "status": "succeeded"
+  },
+  "context_manifest": {
+    "dropped": [],
+    "estimated_input_tokens": 9986,
+    "estimator": "utf8_bytes_v1",
+    "id": "039b6b4f-21f9-4eaf-8aa6-23e02afd1a1a",
+    "included": [
+      "goal",
+      "capabilities",
+      "session",
+      "memory:c7191d8c-519c-460a-93c4-3755feba905c"
+    ],
+    "input_token_limit": 32768,
+    "phase": "planning",
+    "renderer_version": "role-aware-v1",
+    "request_id": "3c259167-af91-4ba1-84b6-e8bd6c72bc0a",
+    "reserved_output_tokens": 2048,
+    "sources": [
+      {
+        "authority": "operator",
+        "evidence_ids": [],
+        "id": "goal",
+        "metadata": {
+          "provider": "goal-capabilities",
+          "provider_contract_version": 1
+        },
+        "source": "goal_context"
+      },
+      {
+        "authority": "framework",
+        "evidence_ids": [],
+        "id": "capabilities",
+        "metadata": {
+          "provider": "goal-capabilities",
+          "provider_contract_version": 1
+        },
+        "source": "skill_registry"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session",
+        "metadata": {
+          "provider": "session",
+          "provider_contract_version": 1,
+          "revision": 2,
+          "session_id": "8d447e02-0c8c-45d9-ae37-d81ebe01f727",
+          "snapshot_id": null
+        },
+        "source": "session_ledger"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [
+          "d5200fb7-35c8-4eda-a9ab-103b13510309"
+        ],
+        "id": "memory:c7191d8c-519c-460a-93c4-3755feba905c",
+        "metadata": {
+          "provider": "memory",
+          "provider_contract_version": 1,
+          "record_hash": "8e403393c932096f0eb4e5d4fcaae9571c4a2adb2f988ca533ecd185cfd3cab2",
+          "valid_until": null,
+          "verified_at": 1790022711.746906
+        },
+        "source": "scoped_memory_catalog"
+      }
+    ]
+  },
+  "model_records": [
+    {
+      "id": "19c48cce-341c-4b5a-9d3b-0a3fae220af9",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-dd4559e8-429e-9196-a9fb-778f44e63540"
+    },
+    {
+      "id": "6c9ab75c-6acd-43ac-8308-c2d05144bf49",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-d694a6ad-08a7-9220-9c66-cc434e4e91e8"
+    },
+    {
+      "id": "ded1b54d-e0d8-47bf-a02c-f43abb875fb5",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-775599af-ca06-902f-a4aa-08cb9480caca"
+    }
+  ]
+}

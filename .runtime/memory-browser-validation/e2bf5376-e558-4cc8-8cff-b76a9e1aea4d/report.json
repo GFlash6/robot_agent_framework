@@ -1,0 +1,13 @@
+{
+  "status": "failed",
+  "root": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-browser-validation/e2bf5376-e558-4cc8-8cff-b76a9e1aea4d",
+  "seed": {
+    "memory_id": "14c39cba-5b9a-4d32-a267-b9d10d93e98f",
+    "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-browser-validation/e2bf5376-e558-4cc8-8cff-b76a9e1aea4d/protocol.md",
+    "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5"
+  },
+  "mock_used": false,
+  "simulation_used": false,
+  "mobile_overflow": false,
+  "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('任务目标', { exact: true })\u001b[22m\n"
+}

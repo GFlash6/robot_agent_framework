@@ -1,0 +1,87 @@
+{
+  "root": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/application-validation/cdc10965-4a1b-4834-94f2-fad129b57eb4",
+  "kind": "clarification-and-failure-explanation",
+  "clarification_questions": [
+    {
+      "field": "archive_details",
+      "question": "请问您具体要归档哪个文件（请提供文件路径或名称），以及希望将其归档到哪个目标位置？",
+      "reason": "指令中的'那个文件'指代不明，且未指定归档的目标位置，需要用户明确源文件和归档目的地。"
+    }
+  ],
+  "context_evidence": {
+    "bundle_id": "8a9556fb-c44e-4384-8d83-855078a405ab",
+    "bundle_hash": "cdbccc218e49e8af20d6c4b50b31171c3ec383b541f38f4762cea8b133726779",
+    "manifest_id": "8a9556fb-c44e-4384-8d83-855078a405ab",
+    "providers": [
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "goal",
+          "capabilities"
+        ],
+        "included": [
+          "goal",
+          "capabilities"
+        ],
+        "provider": "goal-capabilities",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "task-state"
+        ],
+        "included": [
+          "task-state"
+        ],
+        "provider": "task-state",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "session"
+        ],
+        "included": [
+          "session"
+        ],
+        "provider": "session",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [],
+        "included": [],
+        "provider": "memory",
+        "status": "empty"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "asset-evidence"
+        ],
+        "included": [
+          "asset-evidence"
+        ],
+        "provider": "assets",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "ui-selection"
+        ],
+        "included": [
+          "ui-selection"
+        ],
+        "provider": "selection",
+        "status": "collected"
+      }
+    ],
+    "actual_request_reconstruction": "exact_messages_and_response_format",
+    "request_hash": "e24b2b12a41d2cec78a72ac12c66a37a929aa94e9e6ca073f7613d06f844b4c9",
+    "raw_response_sha256": "f7469802b03933dae779b778a6f34df1e759b0ea8e0631fc9e3ead2a3204e7b1"
+  },
+  "status": "failed",
+  "error": "AssertionError: assert [{'role': 'sy...et_file\"}]}'}] == [{'content': ...ole': 'user'}]\n  \n  At index 4 diff: {'role': 'user', 'content': '{\"ambiguities\": [\"The phrase \\'that file\\' is a demonstrative reference that lacks a clear antecedent in the provided text.\", \"The term \\'archive\\' could mean copying to a backup directory or ingesting into an asset management system.\"], \"assumptions\": [\"The user has a specific file in mind that can be identified through context or grounding.\", \"The system has the necessary permissions to read the source file and write to the archive destination.\"], \"clarification_requests\": [\"Which specific file do you want me to archive? P...\n  \n  ...Full output truncated (2 lines hidden), use '-vv' to show"
+}

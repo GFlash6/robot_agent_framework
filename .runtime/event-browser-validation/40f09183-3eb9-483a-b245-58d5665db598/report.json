@@ -1,0 +1,25 @@
+{
+  "status": "failed",
+  "root": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/event-browser-validation/40f09183-3eb9-483a-b245-58d5665db598",
+  "sourceRoot": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/multifile-validation/226fe510-73f6-4516-af2e-ba3354c74443",
+  "seed": {
+    "model_task": "e219f59f-f75d-4071-bc0f-d6ceb9979e7b",
+    "model_events": 17,
+    "long_task": "93481b6b-dbc3-4b86-8dbd-1aba4256f670",
+    "long_events": 69,
+    "models": 2,
+    "executions": 9
+  },
+  "mock_used": false,
+  "simulation_used": false,
+  "new_model_calls": 0,
+  "console_errors": [],
+  "page_requests": [
+    {
+      "task_id": "93481b6b-dbc3-4b86-8dbd-1aba4256f670",
+      "after_seq": 0,
+      "limit": 50
+    }
+  ],
+  "error": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '任务事件记录', exact: true }).getByLabel('查看任务', { exact: true })\u001b[22m\n"
+}

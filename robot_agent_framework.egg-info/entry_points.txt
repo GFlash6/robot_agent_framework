@@ -1,0 +1,3 @@
+[console_scripts]
+robot-agent = robot_agent.cli:main
+robot-agent-observer = robot_agent_observer.server:main

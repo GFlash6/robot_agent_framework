@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "root": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-browser-validation/54bc974c-11f0-4e05-98f2-2971f44f02fa",
+  "mock_used": false,
+  "simulation_used": false,
+  "console_errors": [],
+  "mobile_overflow": false,
+  "disconnected_records_retained": true,
+  "screenshots_reused": true,
+  "checks": [
+    "read-only final capture",
+    "actual server disconnect preserves last diagnosis"
+  ]
+}

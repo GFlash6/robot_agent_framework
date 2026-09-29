@@ -1,0 +1,250 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "contract": {
+    "schema_version": 1,
+    "verifier_skill": "asset.verify",
+    "checks": [
+      {
+        "id": "operator-expected-hash",
+        "path": "sha256",
+        "op": "eq",
+        "value": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46"
+      },
+      {
+        "id": "operator-expected-size",
+        "path": "size",
+        "op": "eq",
+        "value": 6296
+      },
+      {
+        "id": "actual-integrity",
+        "path": "verified",
+        "op": "eq",
+        "value": true
+      }
+    ]
+  },
+  "contract_hash": "63bdf3c1c3b548840bbd92f2d4fa5842cca3ca3505e46a776096a845d0c6189b",
+  "cases": [
+    {
+      "source_changed_after_planning": false,
+      "task_id": "2732152c-06c3-40b6-8c25-89a258b5ee83",
+      "task_status": "succeeded",
+      "plan": {
+        "steps": [
+          {
+            "id": "ingest",
+            "skill": "file.ingest",
+            "args": {
+              "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-validation/6f678fa6-3d85-46da-8406-c674e993e70e/unchanged.md",
+              "metadata": {
+                "kind": "document",
+                "encoding": "utf8",
+                "source": "completion-validation"
+              }
+            }
+          },
+          {
+            "id": "verify",
+            "skill": "asset.verify",
+            "args": {
+              "asset_id": {
+                "$ref": "ingest.asset_id"
+              }
+            },
+            "deps": [
+              "ingest"
+            ]
+          }
+        ],
+        "verification": "verify"
+      },
+      "actual_source_sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+      "actual_result": {
+        "completion_evaluation": {
+          "checks": [
+            {
+              "actual": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+              "id": "operator-expected-hash",
+              "op": "eq",
+              "path": "sha256",
+              "status": "passed",
+              "value": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46"
+            },
+            {
+              "actual": 6296,
+              "id": "operator-expected-size",
+              "op": "eq",
+              "path": "size",
+              "status": "passed",
+              "value": 6296
+            },
+            {
+              "actual": true,
+              "id": "actual-integrity",
+              "op": "eq",
+              "path": "verified",
+              "status": "passed",
+              "value": true
+            }
+          ],
+          "contract_hash": "63bdf3c1c3b548840bbd92f2d4fa5842cca3ca3505e46a776096a845d0c6189b",
+          "execution_id": "38562480-ad34-4bfc-aee6-be2af4c37dc4",
+          "schema_version": 1,
+          "status": "passed",
+          "verifier_skill": "asset.verify"
+        },
+        "evidence": [
+          {
+            "sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+            "source": "asset:75a2c835-e85b-462b-96eb-eba6c46da5d0"
+          }
+        ],
+        "execution_id": "38562480-ad34-4bfc-aee6-be2af4c37dc4",
+        "output": {
+          "sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+          "size": 6296,
+          "verified": true
+        },
+        "quiescent": true,
+        "reported_status": "succeeded",
+        "status": "succeeded"
+      },
+      "asset_id": "75a2c835-e85b-462b-96eb-eba6c46da5d0"
+    },
+    {
+      "source_changed_after_planning": true,
+      "task_id": "0cdcac3d-0457-4832-aa5e-c9bc590c9083",
+      "task_status": "failed",
+      "plan": {
+        "steps": [
+          {
+            "id": "ingest",
+            "skill": "file.ingest",
+            "args": {
+              "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-validation/6f678fa6-3d85-46da-8406-c674e993e70e/changed-after-plan.md",
+              "metadata": {
+                "kind": "document",
+                "encoding": "utf8",
+                "source": "completion-validation"
+              }
+            },
+            "deps": []
+          },
+          {
+            "id": "verify",
+            "skill": "asset.verify",
+            "args": {
+              "asset_id": {
+                "$ref": "ingest.asset_id"
+              }
+            },
+            "deps": [
+              "ingest"
+            ]
+          }
+        ],
+        "verification": "verify"
+      },
+      "actual_source_sha256": "127d285f24c70b19fa2d3574d2b67a43c2470f398fcf6156a47a32ab6eb380a4",
+      "actual_result": {
+        "completion_evaluation": {
+          "checks": [
+            {
+              "actual": "127d285f24c70b19fa2d3574d2b67a43c2470f398fcf6156a47a32ab6eb380a4",
+              "id": "operator-expected-hash",
+              "op": "eq",
+              "path": "sha256",
+              "status": "failed",
+              "value": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46"
+            },
+            {
+              "actual": 6366,
+              "id": "operator-expected-size",
+              "op": "eq",
+              "path": "size",
+              "status": "failed",
+              "value": 6296
+            },
+            {
+              "actual": true,
+              "id": "actual-integrity",
+              "op": "eq",
+              "path": "verified",
+              "status": "passed",
+              "value": true
+            }
+          ],
+          "contract_hash": "63bdf3c1c3b548840bbd92f2d4fa5842cca3ca3505e46a776096a845d0c6189b",
+          "execution_id": "5edf44ca-f191-4871-85b2-46e315c5e0c6",
+          "schema_version": 1,
+          "status": "failed",
+          "verifier_skill": "asset.verify"
+        },
+        "error": "task completion criteria failed",
+        "evidence": [
+          {
+            "sha256": "127d285f24c70b19fa2d3574d2b67a43c2470f398fcf6156a47a32ab6eb380a4",
+            "source": "asset:35cd31a6-975b-4eac-8f1d-0e478f77941d"
+          }
+        ],
+        "execution_id": "5edf44ca-f191-4871-85b2-46e315c5e0c6",
+        "output": {
+          "sha256": "127d285f24c70b19fa2d3574d2b67a43c2470f398fcf6156a47a32ab6eb380a4",
+          "size": 6366,
+          "verified": true
+        },
+        "quiescent": true,
+        "reported_status": "succeeded",
+        "status": "failed"
+      },
+      "asset_id": "35cd31a6-975b-4eac-8f1d-0e478f77941d"
+    }
+  ],
+  "model_records": [
+    {
+      "id": "5b2828de-7ed1-40b8-a899-9a42fd219e94",
+      "method": "planning",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-55bd2443-f7a4-9334-a232-e1ef1f7e070f",
+      "context_bundle_hash": "2050465fe8a75447f6c49d7707396fd5c967db4489a505bc6c878ca11c375554",
+      "request_sha256": "39166f93c18658dbc73056c38e6cb9550e851a999da65a9af067260609550421",
+      "raw_sha256": "b731973caa9919a28a859d96a7ba7e1a1e794522cdc19e9b8c8cb3eeb3882670",
+      "exact_input_reconstruction": true
+    },
+    {
+      "id": "6a2a8f32-9b95-49c6-966a-2ac4f4303fc2",
+      "method": "goal_analysis",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-b4473ca6-9e5a-9a34-944e-68a0405704ac",
+      "context_bundle_hash": "0fd9ce02fee796f870cc0d78930b630b61e86cefea8a4b32d09378deaa1ab04c",
+      "request_sha256": "7874619ff75b1f90f65ccb0d03e8f0e11200630695c617205680796516e8359d",
+      "raw_sha256": "7643ff0b78e8e321085b66cf55d15775d64fd61bd41389a9f20a9407840979f8",
+      "exact_input_reconstruction": true
+    },
+    {
+      "id": "9a225840-8763-4608-a068-bf2db1bd8630",
+      "method": "goal_analysis",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-3948c6bb-8da7-95f6-8c4e-1bb99c8ca278",
+      "context_bundle_hash": "f5e8039b59e75180ce550d80d63e2403b83b397c585ef40528997b12dde2e978",
+      "request_sha256": "5be88bc575d3de38cad3777ec2f3634ed942271aab7eca1b2f4a8f936c5288b8",
+      "raw_sha256": "520ceb2802e7b91c93154a3d43b99f5172621953ded2520503f11ab09bd430c7",
+      "exact_input_reconstruction": true
+    },
+    {
+      "id": "ea328cf1-4c23-4e90-ac0e-08a920dbe0a3",
+      "method": "planning",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-2ccf0590-78f1-99d6-a982-87a41acb96de",
+      "context_bundle_hash": "faa19ce5ab22ac72c978a202a32bb8b72a23f6c4c76bd6d98af62d767601bd93",
+      "request_sha256": "59febf3c2003701e4fb403a70732373fc9e0fb97c4571855e81e55be04f7c457",
+      "raw_sha256": "f9ebd72f8dee61a3afeed73cb2ca0c09e9e7c7b7930e86a7996173bca6579018",
+      "exact_input_reconstruction": true
+    }
+  ],
+  "status": "passed",
+  "elapsed_seconds": 83.80333924200386
+}

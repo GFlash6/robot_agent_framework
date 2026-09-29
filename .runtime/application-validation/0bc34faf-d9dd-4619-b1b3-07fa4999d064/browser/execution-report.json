@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "source_report": ".runtime/application-validation/0bc34faf-d9dd-4619-b1b3-07fa4999d064/report.json",
+  "task_id": "9bd08d0f-bda6-4015-938b-59147389c204",
+  "session_id": "1f9fb11e-eae2-4256-9d5b-5b110b03ab1d",
+  "kind": "browser-plan-and-real-execution",
+  "executed_task_id": "d9ff4a61-cec4-4aa1-b94b-e7904e88bccb",
+  "expected_sha256": "7590bb588d7f28a79d0b2a58927e75e41e7300edffabe541950c40db50f1d140",
+  "actual_result": {
+    "evidence": [
+      {
+        "sha256": "7590bb588d7f28a79d0b2a58927e75e41e7300edffabe541950c40db50f1d140",
+        "source": "asset:3be8d89b-fa59-4ae6-b1cc-35b8800e080b"
+      }
+    ],
+    "execution_id": "54906f8c-39f8-4a8e-b691-282d26b7dbbf",
+    "output": {
+      "sha256": "7590bb588d7f28a79d0b2a58927e75e41e7300edffabe541950c40db50f1d140",
+      "size": 36,
+      "verified": true
+    },
+    "quiescent": true,
+    "status": "succeeded"
+  },
+  "console_errors": []
+}

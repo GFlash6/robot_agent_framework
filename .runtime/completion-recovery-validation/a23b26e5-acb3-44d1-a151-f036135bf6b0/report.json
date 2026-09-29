@@ -1,0 +1,1239 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "contract": {
+    "schema_version": 1,
+    "verifier_skill": "asset.verify",
+    "checks": [
+      {
+        "id": "expected-hash",
+        "path": "sha256",
+        "op": "eq",
+        "value": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0"
+      },
+      {
+        "id": "expected-size",
+        "path": "size",
+        "op": "eq",
+        "value": 6822
+      },
+      {
+        "id": "integrity",
+        "path": "verified",
+        "op": "eq",
+        "value": true
+      }
+    ]
+  },
+  "model_records": [
+    {
+      "id": "252ba2a3-2c28-4313-b427-443a4779a3fa",
+      "method": "planning",
+      "response_id": "chatcmpl-f950d5ef-a5ef-9969-b046-ea990d5b87d3",
+      "actual_model": "qwen3.7-plus",
+      "context_bundle_hash": "420fd11975832473e61a77bd6515d9e5c2a3e8e7da036516ca71f8209a752abb",
+      "request_sha256": "0422642454fc22a307e1c5dc4a8aae5888077cee87e1770da15fad50dc71c849",
+      "raw_sha256": "5cecea1679afd0562e206d9e98cea4134764413e5830884847a2fde360b5486b",
+      "exact_input_reconstruction": true
+    },
+    {
+      "id": "576f3bd1-a705-427e-b52c-0316013759f8",
+      "method": "goal_analysis",
+      "response_id": "chatcmpl-238eb063-fbc1-957b-bd51-9a29cdc93c7f",
+      "actual_model": "qwen3.7-plus",
+      "context_bundle_hash": "c2165ce6d3ac8008518849baabf96d9c95b8c6284ff16bc78c711c87e74d5399",
+      "request_sha256": "6004148aa26df98b0b9f4cb5dc2fa079980bf8e196e8f16d4dc0a117e803c384",
+      "raw_sha256": "de69383f3c4333879875617736359a62e84eb95816b23b222ee6536920e83e31",
+      "exact_input_reconstruction": true
+    },
+    {
+      "id": "68f6cfb8-3d92-4b3e-a148-cb80fb7b4694",
+      "method": "planning",
+      "response_id": "chatcmpl-9bc0b272-c3db-9f97-a7dd-0f10e29826b2",
+      "actual_model": "qwen3.7-plus",
+      "context_bundle_hash": "8ebff572e08f73ac4edbef9875a21bef12ffa324838369003ca513abaf17d4d4",
+      "request_sha256": "319c34e66833dd5fe84b2f31b542565113486eed6ca6d32960ab9de4bbf6c407",
+      "raw_sha256": "8bac0b62d7c39c4762609e176e99ba6a8a3e732070351ac75949aaa9bd132be0",
+      "exact_input_reconstruction": true
+    }
+  ],
+  "operator_read_hashes": {
+    "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/primary.md": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0",
+    "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/backup.md": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0"
+  },
+  "actual_failure": {
+    "catalog": {
+      "asset.verify": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha256",
+            "size",
+            "verified"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "asset.verify-set": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify-set",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256",
+                  "size"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "verified",
+            "count",
+            "items"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "file.copy": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "chunk_bytes": {
+              "maximum": 8388608,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "source": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "target"
+          ],
+          "type": "object"
+        },
+        "name": "file.copy",
+        "output_schema": {
+          "required": [
+            "sha256",
+            "verified",
+            "path"
+          ],
+          "type": "object"
+        },
+        "replay_safe": false,
+        "resources": {},
+        "verifier": true
+      },
+      "file.ingest": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "nonempty",
+            "path": "asset_id"
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "metadata": {
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "name": "file.ingest",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "asset_id",
+            "sha256",
+            "size"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": false
+      }
+    },
+    "completion_contract": {
+      "checks": [
+        {
+          "id": "expected-hash",
+          "op": "eq",
+          "path": "sha256",
+          "value": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0"
+        },
+        {
+          "id": "expected-size",
+          "op": "eq",
+          "path": "size",
+          "value": 6822
+        },
+        {
+          "id": "integrity",
+          "op": "eq",
+          "path": "verified",
+          "value": true
+        }
+      ],
+      "schema_version": 1,
+      "verifier_skill": "asset.verify"
+    },
+    "completion_contract_hash": "ea8d35a42fcf94f3b022dd1c56cd342581d926d13c890faf29386cf3538dbb38",
+    "context_snapshot_hash": "a8a0a23aafd9250943e5797af20504e8a99f6a7d485d4616288816c1217edb77",
+    "context_snapshot_id": "3f4b336d-281e-467e-8d7b-f1ab72fbdfff",
+    "created_at": 1790043096.9189484,
+    "draft_id": "1b4e0b74-791b-4677-aedd-2d34a1b575de",
+    "generation": 0,
+    "goal": "归档协议文档并验证操作者要求的原始字节。主文件是 /home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/primary.md，授权备用文件是 /home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/backup.md。操作者刚刚实际读取两者，SHA256 均为 376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0，大小均为 6822。首次计划必须仅用主文件执行 file.ingest，再用 asset.verify 引用该步骤实际 asset_id；不要添加 fallback。如果执行后实际完成契约检查失败，允许重规划改用备用文件重新 file.ingest，再 asset.verify。每次计划均为这两个步骤，metadata 使用 kind=document、encoding=utf8、source=completion-recovery。验收必须保持原哈希、大小和 verified=true，不能通过接受已变化的主文件放宽要求。无需修改任何文件或另加探测技能，不涉及机器人运动。完成契约通过独立上下文提供，勿写进模型计划。",
+    "id": "99c969df-84ce-4696-b49b-c25bfb8ff7ff",
+    "last_command_id": "84062ffcf845e7fd6b383be5bae248330f7a075b67e57bd4c9d127ce73ffbf92",
+    "max_replans": 1,
+    "model_config": {
+      "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.7-plus",
+      "timeout": 120,
+      "token_env": "API_KEY"
+    },
+    "model_response_id": "252ba2a3-2c28-4313-b427-443a4779a3fa",
+    "origin": {
+      "action_call_id": "492c4735-49f5-4ac6-8ce0-2b3c749517b8",
+      "command_id": "84062ffcf845e7fd6b383be5bae248330f7a075b67e57bd4c9d127ce73ffbf92",
+      "request_id": "492c4735-49f5-4ac6-8ce0-2b3c749517b8",
+      "subject": "local:gflash"
+    },
+    "plan": {
+      "steps": [
+        {
+          "args": {
+            "metadata": {
+              "encoding": "utf8",
+              "kind": "document",
+              "source": "completion-recovery"
+            },
+            "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/primary.md"
+          },
+          "deps": [],
+          "id": "ingest_primary",
+          "skill": "file.ingest"
+        },
+        {
+          "args": {
+            "asset_id": {
+              "$ref": "ingest_primary.asset_id"
+            }
+          },
+          "deps": [
+            "ingest_primary"
+          ],
+          "id": "verify_asset",
+          "skill": "asset.verify"
+        }
+      ],
+      "verification": "verify_asset"
+    },
+    "priority": 0,
+    "replans": 0,
+    "revision": 0,
+    "robot_id": "r1",
+    "session_id": "80a59b92-b6da-4eb5-90dd-226f3955b535",
+    "status": "replanning",
+    "steps": {
+      "ingest_primary": {
+        "alternative": 0,
+        "attempts": 1,
+        "status": "succeeded",
+        "execution_id": "062f1ac0-9842-4501-82b3-a0ecacd270bf",
+        "result": {
+          "execution_id": "062f1ac0-9842-4501-82b3-a0ecacd270bf",
+          "status": "succeeded",
+          "quiescent": true,
+          "output": {
+            "asset_id": "e1d8b386-93d9-4cc6-b3e5-6096bc16d335",
+            "sha256": "f936d1bc85d6656613c246e8108b26e95581bf23e6605f8a0b7327d070551966",
+            "size": 6860
+          },
+          "evidence": [
+            {
+              "source": "asset:e1d8b386-93d9-4cc6-b3e5-6096bc16d335",
+              "sha256": "f936d1bc85d6656613c246e8108b26e95581bf23e6605f8a0b7327d070551966"
+            }
+          ]
+        }
+      },
+      "verify_asset": {
+        "alternative": 0,
+        "attempts": 1,
+        "status": "failed",
+        "execution_id": "4be95823-25b8-448f-86c7-dc439ec5c4d1",
+        "result": {
+          "execution_id": "4be95823-25b8-448f-86c7-dc439ec5c4d1",
+          "status": "failed",
+          "quiescent": true,
+          "output": {
+            "sha256": "f936d1bc85d6656613c246e8108b26e95581bf23e6605f8a0b7327d070551966",
+            "size": 6860,
+            "verified": true
+          },
+          "evidence": [
+            {
+              "source": "asset:e1d8b386-93d9-4cc6-b3e5-6096bc16d335",
+              "sha256": "f936d1bc85d6656613c246e8108b26e95581bf23e6605f8a0b7327d070551966"
+            }
+          ],
+          "reported_status": "succeeded",
+          "completion_evaluation": {
+            "schema_version": 1,
+            "contract_hash": "ea8d35a42fcf94f3b022dd1c56cd342581d926d13c890faf29386cf3538dbb38",
+            "execution_id": "4be95823-25b8-448f-86c7-dc439ec5c4d1",
+            "verifier_skill": "asset.verify",
+            "checks": [
+              {
+                "id": "expected-hash",
+                "op": "eq",
+                "path": "sha256",
+                "value": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0",
+                "status": "failed",
+                "actual": "f936d1bc85d6656613c246e8108b26e95581bf23e6605f8a0b7327d070551966"
+              },
+              {
+                "id": "expected-size",
+                "op": "eq",
+                "path": "size",
+                "value": 6822,
+                "status": "failed",
+                "actual": 6860
+              },
+              {
+                "id": "integrity",
+                "op": "eq",
+                "path": "verified",
+                "value": true,
+                "status": "passed",
+                "actual": true
+              }
+            ],
+            "status": "failed"
+          },
+          "error": "task completion criteria failed"
+        }
+      }
+    },
+    "turn_id": "775f97a0-a6d7-4a4b-928f-396b2c590ac7"
+  },
+  "recovery_task": {
+    "catalog": {
+      "asset.verify": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha256",
+            "size",
+            "verified"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "asset.verify-set": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify-set",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256",
+                  "size"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "verified",
+            "count",
+            "items"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "file.copy": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "chunk_bytes": {
+              "maximum": 8388608,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "source": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "target"
+          ],
+          "type": "object"
+        },
+        "name": "file.copy",
+        "output_schema": {
+          "required": [
+            "sha256",
+            "verified",
+            "path"
+          ],
+          "type": "object"
+        },
+        "replay_safe": false,
+        "resources": {},
+        "verifier": true
+      },
+      "file.ingest": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "nonempty",
+            "path": "asset_id"
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "metadata": {
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "name": "file.ingest",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "asset_id",
+            "sha256",
+            "size"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": false
+      }
+    },
+    "completion_contract": {
+      "checks": [
+        {
+          "id": "expected-hash",
+          "op": "eq",
+          "path": "sha256",
+          "value": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0"
+        },
+        {
+          "id": "expected-size",
+          "op": "eq",
+          "path": "size",
+          "value": 6822
+        },
+        {
+          "id": "integrity",
+          "op": "eq",
+          "path": "verified",
+          "value": true
+        }
+      ],
+      "schema_version": 1,
+      "verifier_skill": "asset.verify"
+    },
+    "completion_contract_hash": "ea8d35a42fcf94f3b022dd1c56cd342581d926d13c890faf29386cf3538dbb38",
+    "context_snapshot_hash": "a8a0a23aafd9250943e5797af20504e8a99f6a7d485d4616288816c1217edb77",
+    "context_snapshot_id": "3f4b336d-281e-467e-8d7b-f1ab72fbdfff",
+    "created_at": 1790043096.9189484,
+    "draft_id": "1b4e0b74-791b-4677-aedd-2d34a1b575de",
+    "generation": 1,
+    "goal": "归档协议文档并验证操作者要求的原始字节。主文件是 /home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/primary.md，授权备用文件是 /home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/backup.md。操作者刚刚实际读取两者，SHA256 均为 376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0，大小均为 6822。首次计划必须仅用主文件执行 file.ingest，再用 asset.verify 引用该步骤实际 asset_id；不要添加 fallback。如果执行后实际完成契约检查失败，允许重规划改用备用文件重新 file.ingest，再 asset.verify。每次计划均为这两个步骤，metadata 使用 kind=document、encoding=utf8、source=completion-recovery。验收必须保持原哈希、大小和 verified=true，不能通过接受已变化的主文件放宽要求。无需修改任何文件或另加探测技能，不涉及机器人运动。完成契约通过独立上下文提供，勿写进模型计划。",
+    "id": "99c969df-84ce-4696-b49b-c25bfb8ff7ff",
+    "last_command_id": "84062ffcf845e7fd6b383be5bae248330f7a075b67e57bd4c9d127ce73ffbf92",
+    "max_replans": 1,
+    "model_config": {
+      "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.7-plus",
+      "timeout": 120,
+      "token_env": "API_KEY"
+    },
+    "model_response_id": "68f6cfb8-3d92-4b3e-a148-cb80fb7b4694",
+    "origin": {
+      "action_call_id": "492c4735-49f5-4ac6-8ce0-2b3c749517b8",
+      "command_id": "84062ffcf845e7fd6b383be5bae248330f7a075b67e57bd4c9d127ce73ffbf92",
+      "request_id": "492c4735-49f5-4ac6-8ce0-2b3c749517b8",
+      "subject": "local:gflash"
+    },
+    "plan": {
+      "steps": [
+        {
+          "id": "ingest_backup",
+          "skill": "file.ingest",
+          "args": {
+            "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/backup.md",
+            "metadata": {
+              "kind": "document",
+              "encoding": "utf8",
+              "source": "completion-recovery"
+            }
+          },
+          "deps": []
+        },
+        {
+          "id": "verify_asset",
+          "skill": "asset.verify",
+          "args": {
+            "asset_id": {
+              "$ref": "ingest_backup.asset_id"
+            }
+          },
+          "deps": [
+            "ingest_backup"
+          ]
+        }
+      ],
+      "verification": "verify_asset"
+    },
+    "priority": 0,
+    "replans": 1,
+    "revision": 1,
+    "robot_id": "r1",
+    "session_id": "80a59b92-b6da-4eb5-90dd-226f3955b535",
+    "status": "queued",
+    "steps": {
+      "ingest_backup": {
+        "status": "pending",
+        "attempts": 0,
+        "alternative": 0
+      },
+      "verify_asset": {
+        "status": "pending",
+        "attempts": 0,
+        "alternative": 0
+      }
+    },
+    "turn_id": "775f97a0-a6d7-4a4b-928f-396b2c590ac7"
+  },
+  "final_task": {
+    "catalog": {
+      "asset.verify": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha256",
+            "size",
+            "verified"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "asset.verify-set": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify-set",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256",
+                  "size"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "verified",
+            "count",
+            "items"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "file.copy": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "chunk_bytes": {
+              "maximum": 8388608,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "source": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "target"
+          ],
+          "type": "object"
+        },
+        "name": "file.copy",
+        "output_schema": {
+          "required": [
+            "sha256",
+            "verified",
+            "path"
+          ],
+          "type": "object"
+        },
+        "replay_safe": false,
+        "resources": {},
+        "verifier": true
+      },
+      "file.ingest": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "nonempty",
+            "path": "asset_id"
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "metadata": {
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "name": "file.ingest",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "asset_id",
+            "sha256",
+            "size"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": false
+      }
+    },
+    "completion_contract": {
+      "checks": [
+        {
+          "id": "expected-hash",
+          "op": "eq",
+          "path": "sha256",
+          "value": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0"
+        },
+        {
+          "id": "expected-size",
+          "op": "eq",
+          "path": "size",
+          "value": 6822
+        },
+        {
+          "id": "integrity",
+          "op": "eq",
+          "path": "verified",
+          "value": true
+        }
+      ],
+      "schema_version": 1,
+      "verifier_skill": "asset.verify"
+    },
+    "completion_contract_hash": "ea8d35a42fcf94f3b022dd1c56cd342581d926d13c890faf29386cf3538dbb38",
+    "context_snapshot_hash": "a8a0a23aafd9250943e5797af20504e8a99f6a7d485d4616288816c1217edb77",
+    "context_snapshot_id": "3f4b336d-281e-467e-8d7b-f1ab72fbdfff",
+    "created_at": 1790043096.9189484,
+    "draft_id": "1b4e0b74-791b-4677-aedd-2d34a1b575de",
+    "generation": 1,
+    "goal": "归档协议文档并验证操作者要求的原始字节。主文件是 /home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/primary.md，授权备用文件是 /home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/backup.md。操作者刚刚实际读取两者，SHA256 均为 376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0，大小均为 6822。首次计划必须仅用主文件执行 file.ingest，再用 asset.verify 引用该步骤实际 asset_id；不要添加 fallback。如果执行后实际完成契约检查失败，允许重规划改用备用文件重新 file.ingest，再 asset.verify。每次计划均为这两个步骤，metadata 使用 kind=document、encoding=utf8、source=completion-recovery。验收必须保持原哈希、大小和 verified=true，不能通过接受已变化的主文件放宽要求。无需修改任何文件或另加探测技能，不涉及机器人运动。完成契约通过独立上下文提供，勿写进模型计划。",
+    "id": "99c969df-84ce-4696-b49b-c25bfb8ff7ff",
+    "last_command_id": "84062ffcf845e7fd6b383be5bae248330f7a075b67e57bd4c9d127ce73ffbf92",
+    "max_replans": 1,
+    "model_config": {
+      "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.7-plus",
+      "timeout": 120,
+      "token_env": "API_KEY"
+    },
+    "model_response_id": "68f6cfb8-3d92-4b3e-a148-cb80fb7b4694",
+    "origin": {
+      "action_call_id": "492c4735-49f5-4ac6-8ce0-2b3c749517b8",
+      "command_id": "84062ffcf845e7fd6b383be5bae248330f7a075b67e57bd4c9d127ce73ffbf92",
+      "request_id": "492c4735-49f5-4ac6-8ce0-2b3c749517b8",
+      "subject": "local:gflash"
+    },
+    "plan": {
+      "steps": [
+        {
+          "args": {
+            "metadata": {
+              "encoding": "utf8",
+              "kind": "document",
+              "source": "completion-recovery"
+            },
+            "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-recovery-validation/a23b26e5-acb3-44d1-a151-f036135bf6b0/backup.md"
+          },
+          "deps": [],
+          "id": "ingest_backup",
+          "skill": "file.ingest"
+        },
+        {
+          "args": {
+            "asset_id": {
+              "$ref": "ingest_backup.asset_id"
+            }
+          },
+          "deps": [
+            "ingest_backup"
+          ],
+          "id": "verify_asset",
+          "skill": "asset.verify"
+        }
+      ],
+      "verification": "verify_asset"
+    },
+    "priority": 0,
+    "replans": 1,
+    "revision": 1,
+    "robot_id": "r1",
+    "session_id": "80a59b92-b6da-4eb5-90dd-226f3955b535",
+    "status": "succeeded",
+    "steps": {
+      "ingest_backup": {
+        "alternative": 0,
+        "attempts": 1,
+        "execution_id": "89c57a6d-87ee-4988-9fb2-f8437cfb52c6",
+        "result": {
+          "evidence": [
+            {
+              "sha256": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0",
+              "source": "asset:01971a54-d13d-4024-baa0-3abea29da766"
+            }
+          ],
+          "execution_id": "89c57a6d-87ee-4988-9fb2-f8437cfb52c6",
+          "output": {
+            "asset_id": "01971a54-d13d-4024-baa0-3abea29da766",
+            "sha256": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0",
+            "size": 6822
+          },
+          "quiescent": true,
+          "status": "succeeded"
+        },
+        "status": "succeeded"
+      },
+      "verify_asset": {
+        "alternative": 0,
+        "attempts": 1,
+        "execution_id": "eb0f46fb-9a57-4ca4-9b1a-ec31ea4b9877",
+        "result": {
+          "completion_evaluation": {
+            "checks": [
+              {
+                "actual": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0",
+                "id": "expected-hash",
+                "op": "eq",
+                "path": "sha256",
+                "status": "passed",
+                "value": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0"
+              },
+              {
+                "actual": 6822,
+                "id": "expected-size",
+                "op": "eq",
+                "path": "size",
+                "status": "passed",
+                "value": 6822
+              },
+              {
+                "actual": true,
+                "id": "integrity",
+                "op": "eq",
+                "path": "verified",
+                "status": "passed",
+                "value": true
+              }
+            ],
+            "contract_hash": "ea8d35a42fcf94f3b022dd1c56cd342581d926d13c890faf29386cf3538dbb38",
+            "execution_id": "eb0f46fb-9a57-4ca4-9b1a-ec31ea4b9877",
+            "schema_version": 1,
+            "status": "passed",
+            "verifier_skill": "asset.verify"
+          },
+          "evidence": [
+            {
+              "sha256": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0",
+              "source": "asset:01971a54-d13d-4024-baa0-3abea29da766"
+            }
+          ],
+          "execution_id": "eb0f46fb-9a57-4ca4-9b1a-ec31ea4b9877",
+          "output": {
+            "sha256": "376db8e44aa1349f71ee7cfdfeede0639c4c038d0a6da8649208f3002930dbd0",
+            "size": 6822,
+            "verified": true
+          },
+          "quiescent": true,
+          "reported_status": "succeeded",
+          "status": "succeeded"
+        },
+        "status": "succeeded"
+      }
+    },
+    "turn_id": "775f97a0-a6d7-4a4b-928f-396b2c590ac7"
+  },
+  "status": "passed",
+  "elapsed_seconds": 70.72196359199006
+}

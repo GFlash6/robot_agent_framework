@@ -1,0 +1,177 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "expected_sha256": "7e91dfa21a58e9e39e8b32cdc136fca48d4a4b7a1c4113b5178fcf8613ee6c5d",
+  "scenario": "reconcile",
+  "reconciled_result": {
+    "execution_id": "99a9cca5-c6c4-4a69-9a91-b7f010724f1e",
+    "status": "canceled",
+    "quiescent": true,
+    "output": {
+      "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/copy.md",
+      "bytes_copied": 512
+    },
+    "evidence": [
+      {
+        "source": "file:///home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/copy.md",
+        "bytes": 512
+      }
+    ],
+    "authority": {
+      "domain": "disk",
+      "token": 1
+    },
+    "reconciliation": {
+      "controller_execution_id": "current-controller",
+      "authority": {
+        "domain": "disk",
+        "token": 2
+      }
+    }
+  },
+  "status": "passed",
+  "task_id": "121f9df5-fdd0-4729-83fc-ea0bc9db9cba",
+  "task_status": "canceled",
+  "plan": {
+    "steps": [
+      {
+        "id": "copy_file",
+        "skill": "file.copy",
+        "args": {
+          "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/source.md",
+          "target": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/copy.md",
+          "chunk_bytes": 512
+        },
+        "deps": [],
+        "retries": 0,
+        "fallback": []
+      }
+    ],
+    "verification": "copy_file"
+  },
+  "execution": {
+    "args": {
+      "chunk_bytes": 512,
+      "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/source.md",
+      "target": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/copy.md"
+    },
+    "authority": {
+      "domain": "disk",
+      "token": 1
+    },
+    "created_at": 1790029437.89952,
+    "error": "HTTPStatusError: Client error '409 Conflict' for url 'http://127.0.0.1:37209/executions/99a9cca5-c6c4-4a69-9a91-b7f010724f1e'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
+    "id": "99a9cca5-c6c4-4a69-9a91-b7f010724f1e",
+    "result": {
+      "authority": {
+        "domain": "disk",
+        "token": 1
+      },
+      "evidence": [
+        {
+          "bytes": 512,
+          "source": "file:///home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/copy.md"
+        }
+      ],
+      "execution_id": "99a9cca5-c6c4-4a69-9a91-b7f010724f1e",
+      "output": {
+        "bytes_copied": 512,
+        "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/copy.md"
+      },
+      "quiescent": true,
+      "reconciliation": {
+        "authority": {
+          "domain": "disk",
+          "token": 2
+        },
+        "controller_execution_id": "current-controller"
+      },
+      "status": "canceled"
+    },
+    "skill": "file.copy",
+    "status": "canceled",
+    "step": "copy_file",
+    "task_id": "121f9df5-fdd0-4729-83fc-ea0bc9db9cba"
+  },
+  "service_request": {
+    "body": {
+      "args": {
+        "chunk_bytes": 512,
+        "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/source.md",
+        "target": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea/copy.md"
+      },
+      "authority": {
+        "domain": "disk",
+        "token": 1
+      },
+      "execution_id": "99a9cca5-c6c4-4a69-9a91-b7f010724f1e",
+      "robot_id": "r1",
+      "skill": "file.copy"
+    },
+    "spec": {
+      "adapter": "local",
+      "allowed_roots": [
+        "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/fencing-validation/66873794-8ccb-4209-be75-bfc90441daea"
+      ],
+      "cancelable": true,
+      "checks": [
+        {
+          "op": "eq",
+          "path": "verified",
+          "value": true
+        }
+      ],
+      "fencing_domain": "disk",
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "chunk_bytes": {
+            "maximum": 8388608,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "source": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "target"
+        ],
+        "type": "object"
+      },
+      "name": "file.copy",
+      "output_schema": {
+        "required": [
+          "sha256",
+          "verified",
+          "path"
+        ],
+        "type": "object"
+      },
+      "replay_safe": false,
+      "resources": {},
+      "verifier": true
+    }
+  },
+  "model_records": [
+    {
+      "id": "3d45c425-d906-4144-ad8c-43df8d3e79d0",
+      "method": "planning",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-69dddbce-71a1-9823-b064-057b0c99515c",
+      "context_bundle_id": "3d45c425-d906-4144-ad8c-43df8d3e79d0"
+    },
+    {
+      "id": "8ac4e574-ab14-49f4-b402-345a42d2fedf",
+      "method": "goal_analysis",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-44055da3-b007-9441-9354-635d1d81aec1",
+      "context_bundle_id": null
+    }
+  ]
+}

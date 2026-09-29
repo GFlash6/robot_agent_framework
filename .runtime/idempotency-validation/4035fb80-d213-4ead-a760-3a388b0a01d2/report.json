@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "source_report": ".runtime/automation-validation/40f87372-aaf1-40b5-95b4-a4f3534a9e9c/report.json",
+  "source_report_sha256": "12b427988309ba18de5e594634366082fda293237d45a0f8dbc143801388299a",
+  "source_rule_id": "3262ce881140fe5ba4ddacbdadbd456ad33952913ad41f0f53a81f1ea90a26c9",
+  "original_automation_request_id": "3262ce881140fe5ba4ddacbdadbd456ad33952913ad41f0f53a81f1ea90a26c9",
+  "original_receipt_replayed_exactly": true,
+  "cross_action_reuse_rejected": true,
+  "business_records_unchanged": true,
+  "new_model_calls": 0,
+  "mock_used": false,
+  "simulation_used": false
+}

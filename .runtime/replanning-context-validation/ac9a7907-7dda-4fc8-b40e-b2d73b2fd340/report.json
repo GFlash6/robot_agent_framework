@@ -1,0 +1,316 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "actual_failure": {
+    "catalog": {
+      "asset.verify": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/ac9a7907-7dda-4fc8-b40e-b2d73b2fd340"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha256",
+            "size",
+            "verified"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "file.copy": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/ac9a7907-7dda-4fc8-b40e-b2d73b2fd340"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "chunk_bytes": {
+              "maximum": 8388608,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "source": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "target"
+          ],
+          "type": "object"
+        },
+        "name": "file.copy",
+        "output_schema": {
+          "required": [
+            "sha256",
+            "verified",
+            "path"
+          ],
+          "type": "object"
+        },
+        "replay_safe": false,
+        "resources": {},
+        "verifier": true
+      },
+      "file.ingest": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/ac9a7907-7dda-4fc8-b40e-b2d73b2fd340"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "nonempty",
+            "path": "asset_id"
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "metadata": {
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "name": "file.ingest",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "asset_id",
+            "sha256",
+            "size"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": false
+      }
+    },
+    "context_snapshot_id": "c19e0d5b-2104-4115-89c2-06d089a8aed3",
+    "created_at": 1790022268.096714,
+    "draft_id": "6e0e9d2a-962c-40e5-ac66-beea163e0e3d",
+    "generation": 0,
+    "goal": "归档绑定记忆中的协议文档并验证字节。首次计划只用 primary_path 执行 file.ingest，然后 asset.verify；不要增加 fallback。只有实际文件读取失败后的重规划才允许改用同一记忆中的 backup_path。路径和哈希均从绑定记忆获取，归档位置已配置，无须提问，不涉及机器人运动。",
+    "id": "0df97bbb-82eb-4d35-b748-d6e901b92d7b",
+    "last_command_id": "938fe65f2fe2313071b50f91a9490aedc6b7f5f7f5286a35902b785635bd42b0",
+    "max_replans": 1,
+    "model_config": {
+      "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.7-plus",
+      "timeout": 120,
+      "token_env": "API_KEY",
+      "max_input_tokens": 16727
+    },
+    "model_response_id": "1b6ea003-e516-4f7c-be01-cd9e14c7f704",
+    "origin": {
+      "action_call_id": "1de2f383-b5ec-45a8-8ab5-1ff266fff46c",
+      "command_id": "938fe65f2fe2313071b50f91a9490aedc6b7f5f7f5286a35902b785635bd42b0",
+      "request_id": "1de2f383-b5ec-45a8-8ab5-1ff266fff46c",
+      "subject": "local:gflash"
+    },
+    "plan": {
+      "steps": [
+        {
+          "args": {
+            "metadata": {
+              "encoding": "utf8",
+              "kind": "document",
+              "robot_id": "r1",
+              "source": "operator-recovery-constraint"
+            },
+            "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/ac9a7907-7dda-4fc8-b40e-b2d73b2fd340/primary.md"
+          },
+          "deps": [],
+          "id": "ingest_primary",
+          "skill": "file.ingest"
+        },
+        {
+          "args": {
+            "asset_id": {
+              "$ref": "ingest_primary.asset_id"
+            }
+          },
+          "deps": [
+            "ingest_primary"
+          ],
+          "id": "verify_asset",
+          "skill": "asset.verify"
+        }
+      ],
+      "verification": "verify_asset"
+    },
+    "priority": 0,
+    "replans": 0,
+    "revision": 0,
+    "robot_id": "r1",
+    "session_id": "37917886-361e-4106-8cbe-e7c8fcfc254a",
+    "status": "replanning",
+    "steps": {
+      "ingest_primary": {
+        "alternative": 0,
+        "attempts": 1,
+        "status": "failed",
+        "execution_id": "281a1d73-92f5-48f2-8fa9-a0db10d32f82",
+        "result": {
+          "execution_id": "281a1d73-92f5-48f2-8fa9-a0db10d32f82",
+          "status": "failed",
+          "quiescent": true,
+          "output": {},
+          "evidence": [
+            {
+              "source": "local:file.ingest",
+              "error_type": "FileNotFoundError"
+            }
+          ],
+          "error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/ac9a7907-7dda-4fc8-b40e-b2d73b2fd340/primary.md'"
+        }
+      },
+      "verify_asset": {
+        "alternative": 0,
+        "attempts": 0,
+        "status": "pending"
+      }
+    },
+    "turn_id": "d3d49a0d-4c83-4f7d-9fea-eae06793ea36"
+  },
+  "recovery_input_limit": 16727,
+  "status": "passed",
+  "scenario": "cancel_during_actual_summary",
+  "task_id": "0df97bbb-82eb-4d35-b748-d6e901b92d7b",
+  "retained_model_response_ids": [
+    "86f2c423-4d95-4d5a-8e0e-0a34e180c5e3"
+  ],
+  "budget_events": [
+    {
+      "action_call_id": "fc71f9f0-4560-4c2f-8ce8-b8865cd7e2a7",
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 16487,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "capabilities",
+          "session",
+          "memory:d1dd0b88-d660-4fc5-ae6b-eda8967cb511"
+        ],
+        "input_token_limit": 32768,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790022251.5504653,
+      "id": "528bcaaa-a3aa-498d-ae9b-e06a9d4c1a37",
+      "method": "planning",
+      "session_id": "37917886-361e-4106-8cbe-e7c8fcfc254a",
+      "session_revision": 7,
+      "status": "fits"
+    },
+    {
+      "created_at": 1790022268.1468139,
+      "error": "recovery control command pending",
+      "generation": 0,
+      "id": "dde8ad2e-d678-47bf-8628-09b8d89b69d8",
+      "method": "replanning",
+      "revision": 0,
+      "snapshot_id": "c19e0d5b-2104-4115-89c2-06d089a8aed3",
+      "status": "rejected",
+      "task_id": "0df97bbb-82eb-4d35-b748-d6e901b92d7b",
+      "trigger": "required context exceeds model input budget: session"
+    },
+    {
+      "action_call_id": "cf8a0d6f-e4a6-40cd-86d6-cd70665c9d4f",
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 12794,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "capabilities",
+          "session",
+          "memory:d1dd0b88-d660-4fc5-ae6b-eda8967cb511"
+        ],
+        "input_token_limit": 32768,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790022211.553637,
+      "id": "f6dad9e9-adab-4739-8c19-dec0e65dff99",
+      "method": "goal_analysis",
+      "session_id": "37917886-361e-4106-8cbe-e7c8fcfc254a",
+      "session_revision": 6,
+      "status": "fits"
+    }
+  ],
+  "final_task_status": "canceled",
+  "plan_revision": 0
+}

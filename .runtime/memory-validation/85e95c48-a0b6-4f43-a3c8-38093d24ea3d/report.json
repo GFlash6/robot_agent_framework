@@ -1,0 +1,8 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "source": "docs/SKILL_PROTOCOL.md",
+  "expected_sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+  "memory_id": "f0f484d5-02dd-42ac-99a7-82c2ffe3c84c",
+  "status": "failed",
+  "error": "\nassert 1 == 0\n +  where 1 = CompletedProcess(args=['/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.venv/bin/python', '-m', 'robot...sset_id\",\\n      \"status\": \"failed\"\\n    }\\n  },\\n  \"turn_id\": \"7bd3a2b5-3557-49cc-8323-728f28ef0428\"\\n}\\n', stderr='').returncode"
+}

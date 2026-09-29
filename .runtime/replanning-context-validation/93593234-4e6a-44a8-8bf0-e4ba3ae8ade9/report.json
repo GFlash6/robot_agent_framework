@@ -1,0 +1,664 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "actual_failure": {
+    "catalog": {
+      "asset.verify": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha256",
+            "size",
+            "verified"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "asset.verify-set": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "maxItems": 100,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify-set",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "asset_id": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "sha256",
+                  "size"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "verified",
+            "count",
+            "items"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "file.copy": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "chunk_bytes": {
+              "maximum": 8388608,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "source": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "target"
+          ],
+          "type": "object"
+        },
+        "name": "file.copy",
+        "output_schema": {
+          "required": [
+            "sha256",
+            "verified",
+            "path"
+          ],
+          "type": "object"
+        },
+        "replay_safe": false,
+        "resources": {},
+        "verifier": true
+      },
+      "file.ingest": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "nonempty",
+            "path": "asset_id"
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "metadata": {
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "name": "file.ingest",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "asset_id",
+            "sha256",
+            "size"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": false
+      }
+    },
+    "context_snapshot_hash": "e96c8b6de1e29fe279d7ebd7525ae366c7dcc8fde5e183f153c4ab90d4ebf868",
+    "context_snapshot_id": "f328e428-f575-409e-8ad9-634bcac1c837",
+    "created_at": 1790035142.4386103,
+    "draft_id": "55d409e0-65cc-4b4f-8af0-a7973086546e",
+    "generation": 0,
+    "goal": "归档绑定记忆中的协议文档并验证字节。首次计划只用 primary_path 执行 file.ingest，然后 asset.verify；不要增加 fallback。只有实际文件读取失败后的重规划才允许改用同一记忆中的 backup_path。路径和哈希均从绑定记忆获取，归档位置已配置，无须提问，不涉及机器人运动。",
+    "id": "c0314b16-3e4b-44a2-86a4-a42ff70e2d1e",
+    "last_command_id": "7c80a46ed494bfa67667cc09534e317b9ab8b2094f6a25c69d06ef6cec0f856b",
+    "max_replans": 1,
+    "model_config": {
+      "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.7-plus",
+      "timeout": 120,
+      "token_env": "API_KEY",
+      "max_input_tokens": 18719
+    },
+    "model_response_id": "b3ce8055-b676-4ec7-8fdc-510a0edb969c",
+    "origin": {
+      "action_call_id": "4dc0effd-a4f9-40c1-9560-60e8038030a5",
+      "command_id": "7c80a46ed494bfa67667cc09534e317b9ab8b2094f6a25c69d06ef6cec0f856b",
+      "request_id": "4dc0effd-a4f9-40c1-9560-60e8038030a5",
+      "subject": "local:gflash"
+    },
+    "plan": {
+      "steps": [
+        {
+          "args": {
+            "metadata": {
+              "encoding": "utf8",
+              "kind": "document",
+              "robot_id": "r1",
+              "source": "operator-recovery-constraint"
+            },
+            "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9/primary.md"
+          },
+          "deps": [],
+          "fallback": [],
+          "id": "ingest_primary",
+          "skill": "file.ingest"
+        },
+        {
+          "args": {
+            "asset_id": {
+              "$ref": "ingest_primary.asset_id"
+            }
+          },
+          "deps": [
+            "ingest_primary"
+          ],
+          "id": "verify_asset",
+          "skill": "asset.verify"
+        }
+      ],
+      "verification": "verify_asset"
+    },
+    "priority": 0,
+    "replans": 0,
+    "revision": 0,
+    "robot_id": "r1",
+    "session_id": "5c2e9c47-de19-4c57-991c-4fdf3fbff4c0",
+    "status": "replanning",
+    "steps": {
+      "ingest_primary": {
+        "alternative": 0,
+        "attempts": 1,
+        "status": "failed",
+        "execution_id": "b7c35e4c-377f-4f8e-87bd-3eb4dad5e160",
+        "result": {
+          "execution_id": "b7c35e4c-377f-4f8e-87bd-3eb4dad5e160",
+          "status": "failed",
+          "quiescent": true,
+          "output": {},
+          "evidence": [
+            {
+              "source": "local:file.ingest",
+              "error_type": "FileNotFoundError"
+            }
+          ],
+          "error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9/primary.md'"
+        }
+      },
+      "verify_asset": {
+        "alternative": 0,
+        "attempts": 0,
+        "status": "pending"
+      }
+    },
+    "turn_id": "e4942b38-8141-49b1-88e9-922c2cbc3171"
+  },
+  "recovery_input_limit": 18719,
+  "summary_context_evidence": [
+    {
+      "model_response_id": "f78d96d4-e323-4a15-a4cd-ba304a59955a",
+      "bundle_hash": "0be24fa29ba565f5b9af35a516e7f8f739a20e3e690d1b26e0bfe78c3e174be9",
+      "manifest_id": "f78d96d4-e323-4a15-a4cd-ba304a59955a",
+      "source_snapshot_id": "f328e428-f575-409e-8ad9-634bcac1c837",
+      "source_part_count": 3,
+      "reconstruction": "exact_messages_response_format_temperature_and_allocation",
+      "original_unicode_ranges": "matched"
+    }
+  ],
+  "derived_snapshot_id": "54d2f49d-57bc-4c36-b71f-dea443f24e18",
+  "budget_events": [
+    {
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 13648,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "task-state",
+          "capabilities",
+          "session-summary",
+          "session",
+          "memory:13f4d8c7-269e-449a-8495-7d75e1f569d0"
+        ],
+        "input_token_limit": 18719,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790035142.4899652,
+      "derived_snapshot_id": "54d2f49d-57bc-4c36-b71f-dea443f24e18",
+      "generation": 0,
+      "id": "3a62f12d-5d53-40ae-97e3-9b593b1bd2ed",
+      "method": "replanning",
+      "revision": 0,
+      "snapshot_id": "f328e428-f575-409e-8ad9-634bcac1c837",
+      "status": "reduced",
+      "summary_id": "e0494e67-6eeb-4f28-acd9-066e97bb2343",
+      "task_id": "c0314b16-3e4b-44a2-86a4-a42ff70e2d1e",
+      "trigger": "required context exceeds model input budget: session"
+    },
+    {
+      "action_call_id": "c458d122-dbdb-4a29-83d0-ba896fdb1cda",
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 13811,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "capabilities",
+          "session",
+          "memory:13f4d8c7-269e-449a-8495-7d75e1f569d0"
+        ],
+        "input_token_limit": 32768,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790035087.2787333,
+      "id": "5e53a0c4-f07b-474c-b2f5-7a9c7e920aad",
+      "method": "goal_analysis",
+      "session_id": "5c2e9c47-de19-4c57-991c-4fdf3fbff4c0",
+      "session_revision": 6,
+      "status": "fits"
+    },
+    {
+      "action_call_id": "7270818c-9c3b-495d-a6a9-df50c788bb83",
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 18479,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "capabilities",
+          "session",
+          "memory:13f4d8c7-269e-449a-8495-7d75e1f569d0"
+        ],
+        "input_token_limit": 32768,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790035126.6579335,
+      "id": "fc38c844-862a-4acb-8a97-18147ac8ebf2",
+      "method": "planning",
+      "session_id": "5c2e9c47-de19-4c57-991c-4fdf3fbff4c0",
+      "session_revision": 7,
+      "status": "fits"
+    }
+  ],
+  "status": "passed",
+  "task_id": "c0314b16-3e4b-44a2-86a4-a42ff70e2d1e",
+  "snapshot_id": "f328e428-f575-409e-8ad9-634bcac1c837",
+  "recovered_plan": {
+    "steps": [
+      {
+        "args": {
+          "metadata": {
+            "encoding": "utf8",
+            "kind": "document",
+            "robot_id": "r1",
+            "source": "operator-recovery-constraint"
+          },
+          "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9/backup.md"
+        },
+        "deps": [],
+        "fallback": [],
+        "id": "ingest_backup",
+        "retries": 0,
+        "skill": "file.ingest"
+      },
+      {
+        "args": {
+          "asset_id": {
+            "$ref": "ingest_backup.asset_id"
+          }
+        },
+        "deps": [
+          "ingest_backup"
+        ],
+        "fallback": [],
+        "id": "verify_asset",
+        "retries": 0,
+        "skill": "asset.verify"
+      }
+    ],
+    "verification": "verify_asset"
+  },
+  "actual_result": {
+    "evidence": [
+      {
+        "sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+        "source": "asset:b6260f4a-8ce1-4d11-80be-dfcfacf11847"
+      }
+    ],
+    "execution_id": "c2538f48-9278-4b48-8ff1-3d74873f7e09",
+    "output": {
+      "sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+      "size": 6296,
+      "verified": true
+    },
+    "quiescent": true,
+    "status": "succeeded"
+  },
+  "context_manifest": {
+    "dropped": [],
+    "estimated_input_tokens": 13648,
+    "estimator": "utf8_bytes_v1",
+    "id": "6a5beeee-7369-450d-98ca-69eb3c71f3a4",
+    "included": [
+      "goal",
+      "task-state",
+      "capabilities",
+      "session-summary",
+      "session",
+      "memory:13f4d8c7-269e-449a-8495-7d75e1f569d0"
+    ],
+    "input_token_limit": 18719,
+    "phase": "replanning",
+    "provider_diagnostics": [
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "goal",
+          "capabilities"
+        ],
+        "included": [
+          "goal",
+          "capabilities"
+        ],
+        "provider": "goal-capabilities",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "task-state"
+        ],
+        "included": [
+          "task-state"
+        ],
+        "provider": "task-state",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "session-summary",
+          "session"
+        ],
+        "included": [
+          "session-summary",
+          "session"
+        ],
+        "provider": "session",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "memory:13f4d8c7-269e-449a-8495-7d75e1f569d0"
+        ],
+        "included": [
+          "memory:13f4d8c7-269e-449a-8495-7d75e1f569d0"
+        ],
+        "provider": "memory",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [],
+        "included": [],
+        "provider": "assets",
+        "status": "empty"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [],
+        "included": [],
+        "provider": "selection",
+        "status": "empty"
+      }
+    ],
+    "renderer_version": "role-aware-v1",
+    "request_id": "136267d5-df81-4452-be54-a82be1372bf4",
+    "reserved_output_tokens": 2048,
+    "sources": [
+      {
+        "authority": "operator",
+        "evidence_ids": [],
+        "id": "goal",
+        "metadata": {
+          "provider": "goal-capabilities",
+          "provider_contract_version": 1
+        },
+        "source": "goal_context"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "task-state",
+        "metadata": {
+          "provider": "task-state",
+          "provider_contract_version": 1
+        },
+        "source": "runtime_ledger"
+      },
+      {
+        "authority": "framework",
+        "evidence_ids": [],
+        "id": "capabilities",
+        "metadata": {
+          "provider": "goal-capabilities",
+          "provider_contract_version": 1
+        },
+        "source": "frozen_skill_catalog"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session-summary",
+        "metadata": {
+          "covered_turns": [
+            {
+              "id": "cc4c1cfa-7338-4a48-b804-ddf97ababe82",
+              "record_hash": "ae3a6f9dc0956b29b20d9797181cb26f8b875e9dbbaacc9640d5148a29200ed3"
+            },
+            {
+              "id": "7b70413e-58e8-4341-9cce-2ec05d2b081d",
+              "record_hash": "6d85e7b3065030631f6ea0090b479c6f5ffd9a4438d8d395c735b92d886de2dc"
+            },
+            {
+              "id": "f71ffedd-a565-4ce1-bc86-300273f9e00e",
+              "record_hash": "8f1ee448cc4a46d3455e7744cb6488c6550e0d4343e8b43523763f2a67908ad9"
+            }
+          ],
+          "model_response_id": "f78d96d4-e323-4a15-a4cd-ba304a59955a",
+          "model_response_ids": [
+            "f78d96d4-e323-4a15-a4cd-ba304a59955a"
+          ],
+          "pinned_turn_ids": [
+            "73644f44-3e28-408f-89f2-8fc05b35e557"
+          ],
+          "provider": "session",
+          "provider_contract_version": 1,
+          "record_hash": "c76b6a9d9fd1f9467d1f1bc83d81541f22c6a8eaab2978d53ae612975febfe38",
+          "summary_id": "e0494e67-6eeb-4f28-acd9-066e97bb2343"
+        },
+        "source": "session_summary"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session",
+        "metadata": {
+          "provider": "session",
+          "provider_contract_version": 1,
+          "revision": 7,
+          "session_id": "5c2e9c47-de19-4c57-991c-4fdf3fbff4c0",
+          "snapshot_id": "54d2f49d-57bc-4c36-b71f-dea443f24e18"
+        },
+        "source": "session_ledger"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [
+          "f8340de7-26b2-49ea-8235-4fa2988350a6"
+        ],
+        "id": "memory:13f4d8c7-269e-449a-8495-7d75e1f569d0",
+        "metadata": {
+          "provider": "memory",
+          "provider_contract_version": 1,
+          "record_hash": "934adccc4e184c2a2f2596c748606e67df51a6b40e7ba323eed4c1217c39c617",
+          "valid_until": null,
+          "verified_at": 1790035163.3821797
+        },
+        "source": "scoped_memory_catalog"
+      }
+    ]
+  },
+  "model_response_id": "6bc4d096-8863-446d-9d1b-c1d79c3d2ee5",
+  "provider_response_id": "chatcmpl-13abdd8a-ed08-9995-a2ca-0fdcb9627167"
+}

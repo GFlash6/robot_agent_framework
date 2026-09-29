@@ -1,0 +1,141 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "source": "docs/SKILL_PROTOCOL.md",
+  "expected_sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+  "memory_id": "6e52e27d-1e64-4d88-aee3-6e9506a85edf",
+  "expired_memory_command": {
+    "command_id": "ceb897325b3f9cf1c5f9442ab4def5928be97427c7e343709b9d1712985a79d4",
+    "status": "rejected",
+    "error": {
+      "code": "INVALID_STATE",
+      "message": "context memory expired"
+    }
+  },
+  "status": "passed",
+  "session_id": "d7191d21-f8b0-486d-8c62-cec8a64bf053",
+  "task_id": "f62c90fa-0902-420f-9cf3-dac1c8779e79",
+  "plan": {
+    "steps": [
+      {
+        "id": "ingest",
+        "skill": "file.ingest",
+        "args": {
+          "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-validation/ef35c4cd-5609-480f-8c6e-4a211aaff70e/skill-protocol.md",
+          "metadata": {
+            "kind": "document",
+            "encoding": "utf8",
+            "source": "memory-selected-document",
+            "robot_id": "r1"
+          }
+        },
+        "deps": [],
+        "retries": 0,
+        "fallback": []
+      },
+      {
+        "id": "verify",
+        "skill": "asset.verify",
+        "args": {
+          "asset_id": {
+            "$ref": "ingest.asset_id"
+          }
+        },
+        "deps": [
+          "ingest"
+        ],
+        "retries": 0,
+        "fallback": []
+      }
+    ],
+    "verification": "verify"
+  },
+  "actual_result": {
+    "evidence": [
+      {
+        "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+        "source": "asset:f552b719-f58b-4888-985e-918298a072d0"
+      }
+    ],
+    "execution_id": "ddbeebc3-0872-4693-98ca-2c65d82e0051",
+    "output": {
+      "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+      "size": 2669,
+      "verified": true
+    },
+    "quiescent": true,
+    "status": "succeeded"
+  },
+  "context_manifest": {
+    "dropped": [],
+    "estimated_input_tokens": 9551,
+    "estimator": "utf8_bytes_v1",
+    "id": "b287bed6-1b9f-40e9-8c02-9b384f5559b0",
+    "included": [
+      "goal",
+      "capabilities",
+      "session",
+      "memory:6e52e27d-1e64-4d88-aee3-6e9506a85edf"
+    ],
+    "input_token_limit": 32768,
+    "phase": "planning",
+    "renderer_version": "role-aware-v1",
+    "request_id": "aea7ccea-3224-4672-84e6-aba0acd0dfdd",
+    "reserved_output_tokens": 2048,
+    "sources": [
+      {
+        "authority": "operator",
+        "evidence_ids": [],
+        "id": "goal",
+        "metadata": {},
+        "source": "goal_context"
+      },
+      {
+        "authority": "framework",
+        "evidence_ids": [],
+        "id": "capabilities",
+        "metadata": {},
+        "source": "skill_registry"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session",
+        "metadata": {
+          "revision": 2,
+          "session_id": "d7191d21-f8b0-486d-8c62-cec8a64bf053"
+        },
+        "source": "session_ledger"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [
+          "ddf0366a-43ac-49f1-b79d-2bd0ab4e9b54"
+        ],
+        "id": "memory:6e52e27d-1e64-4d88-aee3-6e9506a85edf",
+        "metadata": {
+          "record_hash": "e00003552da125a999b5a9d1190be438233ef02c706b9f0960c75335bcef9692",
+          "valid_until": null,
+          "verified_at": 1790014846.4244967
+        },
+        "source": "scoped_memory_catalog"
+      }
+    ]
+  },
+  "model_records": [
+    {
+      "id": "294c111a-006e-4c63-9e9b-25d382d6a121",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-d7c26b63-08bd-9211-a7e3-52489be85752"
+    },
+    {
+      "id": "7ba56889-101b-4de8-8bd6-60eb072503dd",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-b417f135-c1ed-9931-80c7-56103350254f"
+    },
+    {
+      "id": "a9deb807-7735-49cc-9fe2-d8de65037818",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-d395f5b7-4efb-988e-9538-9e18338b7221"
+    }
+  ]
+}

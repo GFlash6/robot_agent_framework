@@ -1,0 +1,9 @@
+{
+  "large_history": true,
+  "automatic": true,
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "status": "failed",
+  "error": "'start'"
+}

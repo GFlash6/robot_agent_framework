@@ -1,0 +1,65 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "summary_context_evidence": {
+    "model_response_id": "b5adad32-6292-477d-9cde-53dce9d45f6a",
+    "bundle_hash": "12ac8a9329c382b62569d8420f0bf591a9bfdaac5d38dcad9fa60cbcb3a84c34",
+    "manifest_id": "b5adad32-6292-477d-9cde-53dce9d45f6a",
+    "source_snapshot_id": null,
+    "source_part_count": 2,
+    "reconstruction": "exact_messages_response_format_temperature_and_allocation",
+    "original_unicode_ranges": "matched"
+  },
+  "status": "passed",
+  "session_id": "938aa597-5d2b-437e-a9a5-1d142c683372",
+  "actual_revision": 7,
+  "summary_run": {
+    "action_call_id": "4ffab613-5d02-4f5b-85ff-483a85959d05",
+    "chunk_count": 4,
+    "created_at": 1790035046.9282198,
+    "error": "session changed during summary",
+    "id": "3bbc6cd4-a94a-4663-a917-f0df6dfeb4d7",
+    "model_response_ids": [
+      "b5adad32-6292-477d-9cde-53dce9d45f6a"
+    ],
+    "session_id": "938aa597-5d2b-437e-a9a5-1d142c683372",
+    "session_revision": 6,
+    "status": "rejected"
+  },
+  "model_response_id": "b5adad32-6292-477d-9cde-53dce9d45f6a",
+  "actual_response_id": "chatcmpl-84f5a707-f245-915c-aeb4-7e38d71391eb",
+  "partial_points": [
+    {
+      "text": "项目文档(robot_agent_framework/ v0.1.0, 2026-09-22)明确证据层级：HTTP/模型/软件测试通过不等于机器人真实完成。状态判定不使用估算百分比，严格区分软件实现与真机验收。本次目标为阅读保留背景，不执行设备动作。",
+      "turn_ids": [
+        "d176eb4f-9f53-4267-8c76-17ec530674fe",
+        "e0e10604-942b-4c91-82de-97a3568ecc11"
+      ]
+    },
+    {
+      "text": "已完成模块：单一工程边界、任务DAG契约、依赖调度、HTTP执行协议、本地文件技能、有界重试/fallback、DBOS持久化及基础记忆/资产契约。这些模块已有代码、测试或实际文件/浏览器运行记录作为证据。",
+      "turn_ids": [
+        "e0e10604-942b-4c91-82de-97a3568ecc11"
+      ]
+    },
+    {
+      "text": "进行中模块：任务长程分解、ROS2技能适配、多任务资源调度、模型重规划及解耦UI控制。上下文构造(CTX)层已实现Session/Memory/摘要/预算及权限渲染(CTX-0~4,6,7)，正推进子规划颗粒度与真实模型闭环验收。",
+      "turn_ids": [
+        "e0e10604-942b-4c91-82de-97a3568ecc11"
+      ]
+    },
+    {
+      "text": "未完成/缺真机验收项：ROS2 Action/机器人技能适配、完整行为树后端、硬件急停、多机器人协调、Postgres高可用、真实传感器数据流、地图失效传播及向量检索。需实际硬件接口、真实topic及现场故障注入验证。",
+      "turn_ids": [
+        "e0e10604-942b-4c91-82de-97a3568ecc11"
+      ]
+    },
+    {
+      "text": "上下文构造专项约束：CTX-5(World State)未完成，要求从实际ROS2/设备读取并检查时间/坐标系/地图版本。无真实接口时仅完成契约与录制数据测试，不声称现场完成。预算降级顺序明确安全策略与Goal为必选。",
+      "turn_ids": [
+        "e0e10604-942b-4c91-82de-97a3568ecc11"
+      ]
+    }
+  ]
+}

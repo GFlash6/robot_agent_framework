@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "root": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/context-browser-validation/87589858-1066-4434-88f1-84a119445cad",
+  "seed": {
+    "summary": "76e6a269-bc5b-4b95-8d8f-48d7325c4911",
+    "goal": "29281d51-d534-4622-8660-9659ee2cc7b3",
+    "legacy": "2c0070a0-8449-45cc-88fe-22b929cb390b",
+    "bundle_id": "76e6a269-bc5b-4b95-8d8f-48d7325c4911",
+    "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/session-summary-validation/c5f8cb4e-15b9-4722-9220-117a16ab4009/ledger/ledger.sqlite",
+    "legacy_source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-validation/83872251-288f-402a-b821-592ce3297033/ledger/ledger.sqlite",
+    "models": 8,
+    "ledger_hash": "0f9d98489ad4d4de07d161b0b5ab5f0181f64888e0bf50a02fe664b826e9b166"
+  },
+  "mock_used": false,
+  "simulation_used": false,
+  "new_model_calls": 0,
+  "page_errors": [],
+  "mutations": [],
+  "final_ledger_hash": "0f9d98489ad4d4de07d161b0b5ab5f0181f64888e0bf50a02fe664b826e9b166",
+  "checks": [
+    "actual context disclosure by keyboard",
+    "model switch isolation",
+    "actual legacy empty state",
+    "server disconnect retention",
+    "switch while disconnected clears old data",
+    "server restart recovery",
+    "actual copied-ledger hash corruption",
+    "desktop and mobile no overflow",
+    "no new model calls or ledger writes"
+  ]
+}

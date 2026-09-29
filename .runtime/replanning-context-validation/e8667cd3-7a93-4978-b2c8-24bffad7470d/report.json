@@ -1,0 +1,7 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "status": "failed",
+  "error": "model planning failed; evidence record 2ddd2a5b-daca-4434-acf1-7f2243e85e81: ContractError"
+}

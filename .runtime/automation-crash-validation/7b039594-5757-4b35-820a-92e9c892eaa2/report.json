@@ -1,0 +1,248 @@
+{
+  "mock_used": false,
+  "simulation_used": false,
+  "configured_model": "qwen3.7-plus",
+  "interrupted_context_evidence": {
+    "record_id": "3964a7f0ad323d5def7655eb2c3594d49cd8b5e4119954c9c4334f26ee9c8405",
+    "bundle_hash": "13544a72f2c1c197e9a63fe0a6abd7e921b51d3446ffdc157acebc5c562ac0de",
+    "manifest_id": "3964a7f0ad323d5def7655eb2c3594d49cd8b5e4119954c9c4334f26ee9c8405",
+    "reconstruction": "exact_messages_response_format_and_allocation",
+    "event_snapshot_match": true
+  },
+  "completed_context_evidence": {
+    "record_id": "900599794c4fdbeea577790268e5084f03c709658a1f6013bbd59ee74f9467d5",
+    "bundle_hash": "7fe9cf1e915dff43710eba7f54fc8b264816acf7bf0dae340bdaca7a3b77fca9",
+    "manifest_id": "900599794c4fdbeea577790268e5084f03c709658a1f6013bbd59ee74f9467d5",
+    "reconstruction": "exact_messages_response_format_and_allocation",
+    "event_snapshot_match": true
+  },
+  "retry_context_evidence": {
+    "record_id": "0e0844fff29b553dc8944e3060acd04fa806d84b5747a0d7f6dc24915550d487",
+    "bundle_hash": "6d1df8677b3f7350cea689e4306d4bec7acea34bfb35cb2cefe9563fd26e0e16",
+    "manifest_id": "0e0844fff29b553dc8944e3060acd04fa806d84b5747a0d7f6dc24915550d487",
+    "reconstruction": "exact_messages_response_format_and_allocation",
+    "event_snapshot_match": true
+  },
+  "status": "passed",
+  "stop_signal": "interrupt",
+  "interrupted_pid": 973705,
+  "exit_code": 130,
+  "connected_sockets": [
+    {
+      "family": "tcp",
+      "socket_inode": "128366832",
+      "remote_port": 443
+    }
+  ],
+  "interrupted_request": {
+    "automation_id": "1b2050ff7472df85acac8813af1d77d8480ab14d88e8341f45505cf74ce2f7d1",
+    "created_at": 1790034546.6847055,
+    "error": "model call interrupted before a terminal response",
+    "event": {
+      "data": "{\"error\": \"FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md'\", \"evidence\": [{\"error_type\": \"FileNotFoundError\", \"source\": \"local:file.ingest\"}], \"execution_id\": \"ea02513b-93ce-4240-b73a-fdf57772fedc\", \"output\": {}, \"quiescent\": true, \"status\": \"failed\"}",
+      "seq": 3,
+      "task": "eeead623-e95b-43a0-818b-d105cc376ae3",
+      "ts": 1790034546.562198,
+      "type": "execution_result"
+    },
+    "event_hash": "f8d4a6e35c923de08423ad7ef59c5af46d60c0ee4282ea64b409ad894da11a94",
+    "execution": {
+      "args": {
+        "metadata": {
+          "encoding": "utf8",
+          "kind": "document",
+          "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md"
+        },
+        "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md"
+      },
+      "created_at": 1790034546.5566993,
+      "id": "ea02513b-93ce-4240-b73a-fdf57772fedc",
+      "result": {
+        "error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md'",
+        "evidence": [
+          {
+            "error_type": "FileNotFoundError",
+            "source": "local:file.ingest"
+          }
+        ],
+        "execution_id": "ea02513b-93ce-4240-b73a-fdf57772fedc",
+        "output": {},
+        "quiescent": true,
+        "status": "failed"
+      },
+      "skill": "file.ingest",
+      "status": "failed",
+      "step": "ingest",
+      "task_id": "eeead623-e95b-43a0-818b-d105cc376ae3"
+    },
+    "execution_hash": "6c52b73fd834cb3f4ef9c538566f9bbe134f4783445b1f4f9e2a17bc40793b0c",
+    "id": "3964a7f0ad323d5def7655eb2c3594d49cd8b5e4119954c9c4334f26ee9c8405",
+    "model_response_id": "3964a7f0ad323d5def7655eb2c3594d49cd8b5e4119954c9c4334f26ee9c8405",
+    "question": "解释这次实际文件缺失造成的失败，逐项区分观察到的错误与未知情况，准确引用事件和执行记录。",
+    "response_status_at_recovery": "requesting",
+    "robot_id": "r1",
+    "rule_revision": 0,
+    "started_at": 1790034546.6873376,
+    "status": "unresolved",
+    "subject": "local:gflash"
+  },
+  "completed_run": {
+    "automation_id": "1b2050ff7472df85acac8813af1d77d8480ab14d88e8341f45505cf74ce2f7d1",
+    "created_at": 1790034547.0327718,
+    "event": {
+      "data": "{\"error\": \"FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/bac28dbc-a844-463b-aa38-89d0d4b990e7.md'\", \"evidence\": [{\"error_type\": \"FileNotFoundError\", \"source\": \"local:file.ingest\"}], \"execution_id\": \"29f6015d-2d2a-48b0-ab7c-8b6240c11d3d\", \"output\": {}, \"quiescent\": true, \"status\": \"failed\"}",
+      "seq": 6,
+      "task": "518f8553-c33c-4ab0-9010-8aff19ce5b5a",
+      "ts": 1790034546.91578,
+      "type": "execution_result"
+    },
+    "event_hash": "89d69ef9b0f3615161b40e1074b8163a3ab3d20c177070a7605decd4658a7b5d",
+    "execution": {
+      "args": {
+        "metadata": {
+          "encoding": "utf8",
+          "kind": "document",
+          "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/bac28dbc-a844-463b-aa38-89d0d4b990e7.md"
+        },
+        "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/bac28dbc-a844-463b-aa38-89d0d4b990e7.md"
+      },
+      "created_at": 1790034546.9104419,
+      "id": "29f6015d-2d2a-48b0-ab7c-8b6240c11d3d",
+      "result": {
+        "error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/bac28dbc-a844-463b-aa38-89d0d4b990e7.md'",
+        "evidence": [
+          {
+            "error_type": "FileNotFoundError",
+            "source": "local:file.ingest"
+          }
+        ],
+        "execution_id": "29f6015d-2d2a-48b0-ab7c-8b6240c11d3d",
+        "output": {},
+        "quiescent": true,
+        "status": "failed"
+      },
+      "skill": "file.ingest",
+      "status": "failed",
+      "step": "ingest",
+      "task_id": "518f8553-c33c-4ab0-9010-8aff19ce5b5a"
+    },
+    "execution_hash": "1b5963a718f5668a4778afae9dd552ba6b647cfaf23800f13e2a0deab455ab64",
+    "finished_at": 1790034568.9746273,
+    "id": "900599794c4fdbeea577790268e5084f03c709658a1f6013bbd59ee74f9467d5",
+    "model_response_id": "900599794c4fdbeea577790268e5084f03c709658a1f6013bbd59ee74f9467d5",
+    "question": "解释这次实际文件缺失造成的失败，逐项区分观察到的错误与未知情况，准确引用事件和执行记录。",
+    "result": {
+      "explanation": {
+        "observed_error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/bac28dbc-a844-463b-aa38-89d0d4b990e7.md'",
+        "record_refs": [
+          "event:6",
+          "execution:29f6015d-2d2a-48b0-ab7c-8b6240c11d3d"
+        ],
+        "summary": "在执行 file.ingest 技能尝试读取指定路径下的 Markdown 文件时，系统抛出 FileNotFoundError，表明目标文件在文件系统中不存在，导致该执行步骤直接失败。",
+        "unknowns": [
+          "该文件缺失的具体原因（例如：是上游进程未生成、被意外删除，还是路径配置错误）",
+          "包含该文件的父目录结构是否实际存在",
+          "是否有其他并发进程正在操作该文件导致读取时状态异常"
+        ]
+      },
+      "is_execution_evidence": false,
+      "model_response_id": "900599794c4fdbeea577790268e5084f03c709658a1f6013bbd59ee74f9467d5"
+    },
+    "robot_id": "r1",
+    "rule_revision": 0,
+    "started_at": 1790034547.0347412,
+    "status": "completed",
+    "subject": "local:gflash"
+  },
+  "actual_response_id": "chatcmpl-36c9bf42-611b-96ca-941a-98eb15577832",
+  "actual_model": "qwen3.7-plus",
+  "actual_failed_task_ids": [
+    "eeead623-e95b-43a0-818b-d105cc376ae3",
+    "518f8553-c33c-4ab0-9010-8aff19ce5b5a"
+  ],
+  "provider_receipt_of_interrupted_request": "unknown",
+  "interrupted_response": "not received or persisted; never fabricated",
+  "explicit_retry": {
+    "automation_id": "1b2050ff7472df85acac8813af1d77d8480ab14d88e8341f45505cf74ce2f7d1",
+    "created_at": 1790034569.142993,
+    "event": {
+      "data": "{\"error\": \"FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md'\", \"evidence\": [{\"error_type\": \"FileNotFoundError\", \"source\": \"local:file.ingest\"}], \"execution_id\": \"ea02513b-93ce-4240-b73a-fdf57772fedc\", \"output\": {}, \"quiescent\": true, \"status\": \"failed\"}",
+      "seq": 3,
+      "task": "eeead623-e95b-43a0-818b-d105cc376ae3",
+      "ts": 1790034546.562198,
+      "type": "execution_result"
+    },
+    "event_hash": "f8d4a6e35c923de08423ad7ef59c5af46d60c0ee4282ea64b409ad894da11a94",
+    "execution": {
+      "args": {
+        "metadata": {
+          "encoding": "utf8",
+          "kind": "document",
+          "source": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md"
+        },
+        "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md"
+      },
+      "created_at": 1790034546.5566993,
+      "id": "ea02513b-93ce-4240-b73a-fdf57772fedc",
+      "result": {
+        "error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md'",
+        "evidence": [
+          {
+            "error_type": "FileNotFoundError",
+            "source": "local:file.ingest"
+          }
+        ],
+        "execution_id": "ea02513b-93ce-4240-b73a-fdf57772fedc",
+        "output": {},
+        "quiescent": true,
+        "status": "failed"
+      },
+      "skill": "file.ingest",
+      "status": "failed",
+      "step": "ingest",
+      "task_id": "eeead623-e95b-43a0-818b-d105cc376ae3"
+    },
+    "execution_hash": "6c52b73fd834cb3f4ef9c538566f9bbe134f4783445b1f4f9e2a17bc40793b0c",
+    "finished_at": 1790034591.8387103,
+    "id": "0e0844fff29b553dc8944e3060acd04fa806d84b5747a0d7f6dc24915550d487",
+    "model_response_id": "0e0844fff29b553dc8944e3060acd04fa806d84b5747a0d7f6dc24915550d487",
+    "question": "解释这次实际文件缺失造成的失败，逐项区分观察到的错误与未知情况，准确引用事件和执行记录。",
+    "result": {
+      "explanation": {
+        "observed_error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/automation-crash-validation/7b039594-5757-4b35-820a-92e9c892eaa2/85f087d7-a561-417c-ac9e-f36db2a5383c.md'",
+        "record_refs": [
+          "event:3",
+          "execution:ea02513b-93ce-4240-b73a-fdf57772fedc"
+        ],
+        "summary": "在执行 file.ingest 步骤时，系统尝试读取指定路径的 Markdown 文件失败，导致任务执行失败。观察到的错误是目标文件在文件系统中不存在（FileNotFoundError）。未知的情况包括：该文件为何缺失（例如是否被意外删除、路径配置错误、或是前置生成步骤未成功创建该文件），以及系统环境是否存在导致文件不可见的异常。",
+        "unknowns": [
+          "文件缺失的根本原因（如被意外删除、未成功生成或路径配置错误）",
+          "该文件是否应由前置任务或步骤生成，且前置步骤是否已经失败",
+          "系统环境或目录挂载点是否存在导致文件不可见的异常"
+        ]
+      },
+      "is_execution_evidence": false,
+      "model_response_id": "0e0844fff29b553dc8944e3060acd04fa806d84b5747a0d7f6dc24915550d487"
+    },
+    "retry_of": "3964a7f0ad323d5def7655eb2c3594d49cd8b5e4119954c9c4334f26ee9c8405",
+    "retry_requested_by": "local:gflash",
+    "robot_id": "r1",
+    "rule_revision": 0,
+    "started_at": 1790034569.2649512,
+    "status": "completed",
+    "subject": "local:gflash"
+  },
+  "explicit_retry_response_id": "chatcmpl-beca424a-b976-920a-8d29-bf7ca1984275",
+  "model_records": 3,
+  "checks": [
+    "real process signal: interrupt",
+    "established model connection",
+    "unresolved after restart",
+    "no automatic replay",
+    "next actual event completes with real response",
+    "response and job committed together",
+    "task states unchanged",
+    "explicit retry is idempotent and budgeted",
+    "original uncertainty retained"
+  ]
+}

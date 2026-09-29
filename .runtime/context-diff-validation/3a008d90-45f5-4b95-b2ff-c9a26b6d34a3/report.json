@@ -1,0 +1,17 @@
+{
+  "source_ledger": ".runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9/ledger/ledger.sqlite",
+  "source_report": ".runtime/replanning-context-validation/93593234-4e6a-44a8-8bf0-e4ba3ae8ade9/report.json",
+  "source_report_sha256": "adb0bf8a458e1b31d852bfe83b29436497f6f1a976068e2be98633057ddf433d",
+  "mock_used": false,
+  "simulation_used": false,
+  "new_model_calls": 0,
+  "actual_response_ids": [
+    "chatcmpl-13abdd8a-ed08-9995-a2ca-0fdcb9627167",
+    "chatcmpl-e16ae3c9-ba8c-9dda-b547-c151ff352643",
+    "chatcmpl-15db15db-24f7-93e2-a8a1-5616dbd1d701",
+    "chatcmpl-4e2ffa7f-2262-9114-8e12-4d01a742b02e"
+  ],
+  "pairs_checked": 16,
+  "status": "failed",
+  "error": "assert 'capabilities' in ['goal']"
+}

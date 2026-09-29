@@ -1,0 +1,62 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "status": "passed",
+  "session_id": "88fad86b-c42b-4b71-81a5-7ef782241890",
+  "actual_revision": 7,
+  "summary_run": {
+    "action_call_id": "e8f2bf26-c744-4a25-9762-bf508f24d738",
+    "chunk_count": 3,
+    "created_at": 1790018693.0662262,
+    "error": "session changed during summary",
+    "id": "ccfdaf50-8966-43d4-832e-97c764a0a625",
+    "model_response_ids": [
+      "7d90879c-73cd-4019-a952-6b3463c11249"
+    ],
+    "session_id": "88fad86b-c42b-4b71-81a5-7ef782241890",
+    "session_revision": 6,
+    "status": "rejected"
+  },
+  "model_response_id": "7d90879c-73cd-4019-a952-6b3463c11249",
+  "actual_response_id": "chatcmpl-ae2fca4c-25de-9e95-97f5-dfdf91932763",
+  "partial_points": [
+    {
+      "text": "项目为“机器人 Agent 框架”（版本0.1.0，阶段implementation，范围robot_agent_framework/）。状态口径严格区分证据层级：HTTP成功、模型自述、软件测试与机器人真实完成互不替代，不使用估算百分比。",
+      "turn_ids": [
+        "9541060b-b79c-4664-8722-7045ab998ce8"
+      ]
+    },
+    {
+      "text": "基础软件链路已完成：项目边界与调研、任务契约与DAG检查、依赖调度、技能注册与HTTP执行协议、本地文件技能、有界重试与fallback、暂停/取消/恢复、多任务账本、SQLite持久化与DBOS工作流、模型配置与响应校验、资产分类与MCAP/rosbag2录制、独立只读观察API等。",
+      "turn_ids": [
+        "9541060b-b79c-4664-8722-7045ab998ce8"
+      ]
+    },
+    {
+      "text": "关键未完成与进行中事项：多机器人协调、硬件急停、控制端隔离旧执行者、Postgres生产部署、高可用、长程规划质量评估、真实传感器/地图流、向量检索、3D/视频预览及worker/机器人健康心跳等真机验收与高级特性均标记为未完成或进行中。",
+      "turn_ids": [
+        "9541060b-b79c-4664-8722-7045ab998ce8"
+      ]
+    },
+    {
+      "text": "上下文构造层(ContextBuilder)架构：旨在不替换现有Runtime/Planner边界下增加独立层。含CTX-0至CTX-7工作包。预算降级顺序：安全策略/Goal > Plan/Step > 人工覆盖/近期Session > WorldState > Memory > 旧Session > 调试材料。",
+      "turn_ids": [
+        "9541060b-b79c-4664-8722-7045ab998ce8"
+      ]
+    },
+    {
+      "text": "上下文构造验收与代码边界：分5阶段验收(类型权限->Session/TaskState闭环->Memory->WorldState->统一入口与评测)。代码边界建议位于robot_agent/context/，含models, builder, allocator, renderer, manifest及providers/reducers/validators子目录。",
+      "turn_ids": [
+        "9541060b-b79c-4664-8722-7045ab998ce8"
+      ]
+    },
+    {
+      "text": "背景说明：用户提供的长文本为项目工程状态文档原文，旨在为后续框架开发提供历史背景参考，明确本次交互不执行任何设备动作。",
+      "turn_ids": [
+        "19e91d0d-d3eb-4d01-842c-3cc03216a4d6",
+        "9541060b-b79c-4664-8722-7045ab998ce8"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: robot-agent-framework
+Version: 0.1.0
+Summary: Evidence-based robot task orchestration and multimodal asset memory
+Requires-Python: >=3.10
+Requires-Dist: dbos==2.31.0
+Requires-Dist: py-trees==2.5.0
+Requires-Dist: mcap==1.4.0
+Requires-Dist: jsonschema==4.26.0
+Requires-Dist: httpx==0.28.1

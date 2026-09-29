@@ -1,0 +1,122 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "contract": {
+    "schema_version": 1,
+    "verifier_skill": "asset.verify",
+    "checks": [
+      {
+        "id": "operator-expected-hash",
+        "path": "sha256",
+        "op": "eq",
+        "value": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46"
+      },
+      {
+        "id": "operator-expected-size",
+        "path": "size",
+        "op": "eq",
+        "value": 6296
+      },
+      {
+        "id": "actual-integrity",
+        "path": "verified",
+        "op": "eq",
+        "value": true
+      }
+    ]
+  },
+  "contract_hash": "63bdf3c1c3b548840bbd92f2d4fa5842cca3ca3505e46a776096a845d0c6189b",
+  "cases": [
+    {
+      "source_changed_after_planning": false,
+      "task_id": "f4bbce5a-4a4b-4dba-8034-b6c164ad5c86",
+      "task_status": "succeeded",
+      "plan": {
+        "steps": [
+          {
+            "id": "ingest",
+            "skill": "file.ingest",
+            "args": {
+              "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/completion-validation/a07ec4ee-32a0-497a-bc91-5f12566451c5/unchanged.md",
+              "metadata": {
+                "kind": "document",
+                "encoding": "utf8",
+                "source": "completion-validation"
+              }
+            }
+          },
+          {
+            "id": "verify",
+            "skill": "asset.verify",
+            "args": {
+              "asset_id": {
+                "$ref": "ingest.asset_id"
+              }
+            },
+            "deps": [
+              "ingest"
+            ]
+          }
+        ],
+        "verification": "verify"
+      },
+      "actual_source_sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+      "actual_result": {
+        "completion_evaluation": {
+          "checks": [
+            {
+              "actual": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+              "id": "operator-expected-hash",
+              "op": "eq",
+              "path": "sha256",
+              "status": "passed",
+              "value": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46"
+            },
+            {
+              "actual": 6296,
+              "id": "operator-expected-size",
+              "op": "eq",
+              "path": "size",
+              "status": "passed",
+              "value": 6296
+            },
+            {
+              "actual": true,
+              "id": "actual-integrity",
+              "op": "eq",
+              "path": "verified",
+              "status": "passed",
+              "value": true
+            }
+          ],
+          "contract_hash": "63bdf3c1c3b548840bbd92f2d4fa5842cca3ca3505e46a776096a845d0c6189b",
+          "execution_id": "cc5e843d-0802-47bf-9ca9-62a427e7a2c3",
+          "schema_version": 1,
+          "status": "passed",
+          "verifier_skill": "asset.verify"
+        },
+        "evidence": [
+          {
+            "sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+            "source": "asset:89af6525-3a4f-4302-b0a5-869882e286b8"
+          }
+        ],
+        "execution_id": "cc5e843d-0802-47bf-9ca9-62a427e7a2c3",
+        "output": {
+          "sha256": "f769063fcd18a75335940d4ebb23086868a5809f65d283b552ab6742e5c17b46",
+          "size": 6296,
+          "verified": true
+        },
+        "quiescent": true,
+        "reported_status": "succeeded",
+        "status": "succeeded"
+      },
+      "asset_id": "89af6525-3a4f-4302-b0a5-869882e286b8"
+    }
+  ],
+  "model_records": [],
+  "status": "failed",
+  "error": "AssertionError: \nassert 1 == 0\n +  where 1 = CompletedProcess(args=['/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.venv/bin/python', '-m', 'robot...n      },\\n      \"status\": \"failed\"\\n    }\\n  },\\n  \"turn_id\": \"1cf2df96-fdfe-47ac-9bcd-f44c1d6ea655\"\\n}\\n', stderr='').returncode",
+  "elapsed_seconds": 86.85389975702856
+}

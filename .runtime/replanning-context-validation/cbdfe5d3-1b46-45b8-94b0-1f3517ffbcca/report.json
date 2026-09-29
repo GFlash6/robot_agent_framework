@@ -1,0 +1,7 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "status": "failed",
+  "error": "{'catalog': {'asset.verify': {'adapter': 'local', 'allowed_roots': ['/home/gflash/agents/unitree_sim_isaaclab/robot_ag...7f4-4ea0-a963-bd988dbdeb59', 'created_at': 1790015967.6317847, 'draft_id': '5dffcca0-09b0-47f0-8d67-530ab0c64320', ...}\nassert 'replanning' == 'failed'\n  \n  - failed\n  + replanning"
+}

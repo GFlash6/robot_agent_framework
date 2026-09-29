@@ -1,0 +1,206 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "source": "docs/SKILL_PROTOCOL.md",
+  "expected_sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+  "memory_id": "ec7a7b65-83d7-4d70-98e1-8a4c3d0d220a",
+  "changed_snapshot_command": {
+    "command_id": "8dba071de02cec4f8034d5bf03960ab6cb61848085a2f648388304e94c2c4e52",
+    "status": "rejected",
+    "error": {
+      "code": "INVALID_STATE",
+      "message": "planning snapshot binding changed"
+    }
+  },
+  "status": "passed",
+  "session_id": "6061698b-247b-4825-96e0-965520931b75",
+  "task_id": "81dddb7a-403d-47d9-abf5-07db7e020fdd",
+  "plan": {
+    "steps": [
+      {
+        "id": "ingest_doc",
+        "skill": "file.ingest",
+        "args": {
+          "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/memory-validation/83872251-288f-402a-b821-592ce3297033/skill-protocol.md",
+          "metadata": {
+            "kind": "document",
+            "encoding": "utf8",
+            "source": "memory-selected-document",
+            "robot_id": "r1"
+          }
+        },
+        "deps": []
+      },
+      {
+        "id": "verify_asset",
+        "skill": "asset.verify",
+        "args": {
+          "asset_id": {
+            "$ref": "ingest_doc.asset_id"
+          }
+        },
+        "deps": [
+          "ingest_doc"
+        ]
+      }
+    ],
+    "verification": "verify_asset"
+  },
+  "actual_result": {
+    "evidence": [
+      {
+        "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+        "source": "asset:6f83d3c7-43a4-4199-9a84-a75b2fc6af22"
+      }
+    ],
+    "execution_id": "48a69930-f466-420a-9db6-c32fd169f651",
+    "output": {
+      "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+      "size": 2669,
+      "verified": true
+    },
+    "quiescent": true,
+    "status": "succeeded"
+  },
+  "context_manifest": {
+    "dropped": [],
+    "estimated_input_tokens": 9670,
+    "estimator": "utf8_bytes_v1",
+    "id": "6444d60d-3ab8-4af2-9eef-4efafbd407e4",
+    "included": [
+      "goal",
+      "capabilities",
+      "session",
+      "memory:ec7a7b65-83d7-4d70-98e1-8a4c3d0d220a"
+    ],
+    "input_token_limit": 32768,
+    "phase": "planning",
+    "provider_diagnostics": [
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "goal",
+          "capabilities"
+        ],
+        "included": [
+          "goal",
+          "capabilities"
+        ],
+        "provider": "goal-capabilities",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [],
+        "included": [],
+        "provider": "task-state",
+        "status": "empty"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "session"
+        ],
+        "included": [
+          "session"
+        ],
+        "provider": "session",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [
+          "memory:ec7a7b65-83d7-4d70-98e1-8a4c3d0d220a"
+        ],
+        "included": [
+          "memory:ec7a7b65-83d7-4d70-98e1-8a4c3d0d220a"
+        ],
+        "provider": "memory",
+        "status": "collected"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [],
+        "included": [],
+        "provider": "assets",
+        "status": "empty"
+      },
+      {
+        "dropped": [],
+        "fragment_ids": [],
+        "included": [],
+        "provider": "selection",
+        "status": "empty"
+      }
+    ],
+    "renderer_version": "role-aware-v1",
+    "request_id": "a6cfc574-587f-4e2a-afbf-3c82d080f5cd",
+    "reserved_output_tokens": 2048,
+    "sources": [
+      {
+        "authority": "operator",
+        "evidence_ids": [],
+        "id": "goal",
+        "metadata": {
+          "provider": "goal-capabilities",
+          "provider_contract_version": 1
+        },
+        "source": "goal_context"
+      },
+      {
+        "authority": "framework",
+        "evidence_ids": [],
+        "id": "capabilities",
+        "metadata": {
+          "provider": "goal-capabilities",
+          "provider_contract_version": 1
+        },
+        "source": "skill_registry"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session",
+        "metadata": {
+          "provider": "session",
+          "provider_contract_version": 1,
+          "revision": 2,
+          "session_id": "6061698b-247b-4825-96e0-965520931b75",
+          "snapshot_id": null
+        },
+        "source": "session_ledger"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [
+          "e36c44e6-eaca-49a9-8b8c-68ba91c240b5"
+        ],
+        "id": "memory:ec7a7b65-83d7-4d70-98e1-8a4c3d0d220a",
+        "metadata": {
+          "provider": "memory",
+          "provider_contract_version": 1,
+          "record_hash": "34daf9f64d452ac32a93e95c531a6838fb9b7c9355894b982ec442824eda67d0",
+          "valid_until": null,
+          "verified_at": 1790027646.7369456
+        },
+        "source": "scoped_memory_catalog"
+      }
+    ]
+  },
+  "model_records": [
+    {
+      "id": "2c0070a0-8449-45cc-88fe-22b929cb390b",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-428435c6-8cb2-9dbc-b8ac-73544d8c008a"
+    },
+    {
+      "id": "43e09595-d03a-4129-851f-0373d4a44345",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-a282da3c-f6c0-9f9e-aa6f-89374d91e503"
+    },
+    {
+      "id": "c596e10d-8fd6-4bc6-b754-a8e621df9117",
+      "actual_model": "qwen3.7-plus",
+      "response_id": "chatcmpl-dedb8f8d-1be6-9921-9d50-e90790458562"
+    }
+  ]
+}

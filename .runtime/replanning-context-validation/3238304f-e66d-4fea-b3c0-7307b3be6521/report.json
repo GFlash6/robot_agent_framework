@@ -1,0 +1,475 @@
+{
+  "configured_model": "qwen3.7-plus",
+  "mock_used": false,
+  "simulation_used": false,
+  "actual_failure": {
+    "catalog": {
+      "asset.verify": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/3238304f-e66d-4fea-b3c0-7307b3be6521"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "type": "object"
+        },
+        "name": "asset.verify",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "verified": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha256",
+            "size",
+            "verified"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": true
+      },
+      "file.copy": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/3238304f-e66d-4fea-b3c0-7307b3be6521"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "eq",
+            "path": "verified",
+            "value": true
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "chunk_bytes": {
+              "maximum": 8388608,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "source": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "target"
+          ],
+          "type": "object"
+        },
+        "name": "file.copy",
+        "output_schema": {
+          "required": [
+            "sha256",
+            "verified",
+            "path"
+          ],
+          "type": "object"
+        },
+        "replay_safe": false,
+        "resources": {},
+        "verifier": true
+      },
+      "file.ingest": {
+        "adapter": "local",
+        "allowed_roots": [
+          "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/3238304f-e66d-4fea-b3c0-7307b3be6521"
+        ],
+        "cancelable": true,
+        "checks": [
+          {
+            "op": "nonempty",
+            "path": "asset_id"
+          }
+        ],
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "metadata": {
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "name": "file.ingest",
+        "output_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string"
+            },
+            "size": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "asset_id",
+            "sha256",
+            "size"
+          ],
+          "type": "object"
+        },
+        "replay_safe": true,
+        "resources": {},
+        "verifier": false
+      }
+    },
+    "context_snapshot_id": "dbe5b168-2b9f-47d0-9411-c950ef2da217",
+    "created_at": 1790021889.5226164,
+    "draft_id": "688d0f6e-c36e-4093-81f1-72a037747b42",
+    "generation": 0,
+    "goal": "归档绑定记忆中的协议文档并验证字节。首次计划只用 primary_path 执行 file.ingest，然后 asset.verify；不要增加 fallback。只有实际文件读取失败后的重规划才允许改用同一记忆中的 backup_path。路径和哈希均从绑定记忆获取，归档位置已配置，无须提问，不涉及机器人运动。",
+    "id": "81688bf9-7b02-4c47-af17-644f15fe979b",
+    "last_command_id": "606bf09bcec2757d2a88153577b42d0bc2cd07fa060660f92ea2c2d74e9a41cd",
+    "max_replans": 1,
+    "model_config": {
+      "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.7-plus",
+      "timeout": 120,
+      "token_env": "API_KEY",
+      "max_input_tokens": 16868
+    },
+    "model_response_id": "5baf0981-afe8-422e-92d6-2d2a002b6ea0",
+    "origin": {
+      "action_call_id": "8612cc9a-bc02-4f4a-aed5-3e8fa8ce8bce",
+      "command_id": "606bf09bcec2757d2a88153577b42d0bc2cd07fa060660f92ea2c2d74e9a41cd",
+      "request_id": "8612cc9a-bc02-4f4a-aed5-3e8fa8ce8bce",
+      "subject": "local:gflash"
+    },
+    "plan": {
+      "steps": [
+        {
+          "args": {
+            "metadata": {
+              "encoding": "utf8",
+              "kind": "document",
+              "robot_id": "r1",
+              "source": "operator-recovery-constraint"
+            },
+            "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/3238304f-e66d-4fea-b3c0-7307b3be6521/primary.md"
+          },
+          "deps": [],
+          "id": "ingest_primary",
+          "skill": "file.ingest"
+        },
+        {
+          "args": {
+            "asset_id": {
+              "$ref": "ingest_primary.asset_id"
+            }
+          },
+          "deps": [
+            "ingest_primary"
+          ],
+          "id": "verify_asset",
+          "skill": "asset.verify"
+        }
+      ],
+      "verification": "verify_asset"
+    },
+    "priority": 0,
+    "replans": 0,
+    "revision": 0,
+    "robot_id": "r1",
+    "session_id": "dfa05103-ce16-4d3b-af7b-30faed73c7bf",
+    "status": "replanning",
+    "steps": {
+      "ingest_primary": {
+        "alternative": 0,
+        "attempts": 1,
+        "status": "failed",
+        "execution_id": "0ca0d0b0-d601-476c-b4b1-453ca52271b6",
+        "result": {
+          "execution_id": "0ca0d0b0-d601-476c-b4b1-453ca52271b6",
+          "status": "failed",
+          "quiescent": true,
+          "output": {},
+          "evidence": [
+            {
+              "source": "local:file.ingest",
+              "error_type": "FileNotFoundError"
+            }
+          ],
+          "error": "FileNotFoundError: [Errno 2] No such file or directory: '/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/3238304f-e66d-4fea-b3c0-7307b3be6521/primary.md'"
+        }
+      },
+      "verify_asset": {
+        "alternative": 0,
+        "attempts": 0,
+        "status": "pending"
+      }
+    },
+    "turn_id": "487c142a-cf13-4227-b75a-54e380b0561d"
+  },
+  "recovery_input_limit": 16868,
+  "derived_snapshot_id": "fdc4094e-26d8-4728-b381-9c8febe98189",
+  "budget_events": [
+    {
+      "action_call_id": "47faa700-bebc-4073-a601-ef7f2252785d",
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 16628,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "capabilities",
+          "session",
+          "memory:660bd0de-1f8a-46ff-b98b-1b766782d9ee"
+        ],
+        "input_token_limit": 32768,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790021867.8857956,
+      "id": "63f222f8-766c-4124-aee7-2adc5f1295b6",
+      "method": "planning",
+      "session_id": "dfa05103-ce16-4d3b-af7b-30faed73c7bf",
+      "session_revision": 7,
+      "status": "fits"
+    },
+    {
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 12014,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "task-state",
+          "capabilities",
+          "session-summary",
+          "session",
+          "memory:660bd0de-1f8a-46ff-b98b-1b766782d9ee"
+        ],
+        "input_token_limit": 16868,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790021889.5703487,
+      "derived_snapshot_id": "fdc4094e-26d8-4728-b381-9c8febe98189",
+      "generation": 0,
+      "id": "c1a7a58c-136f-44e9-bb66-a3bed440858a",
+      "method": "replanning",
+      "revision": 0,
+      "snapshot_id": "dbe5b168-2b9f-47d0-9411-c950ef2da217",
+      "status": "reduced",
+      "summary_id": "10f8f591-67bf-4530-9166-7e3808af37c7",
+      "task_id": "81688bf9-7b02-4c47-af17-644f15fe979b",
+      "trigger": "required context exceeds model input budget: session"
+    },
+    {
+      "action_call_id": "ecc456d9-d128-4580-8118-5aa66142c71f",
+      "allocation": {
+        "drop_details": [],
+        "dropped": [],
+        "estimated_input_tokens": 12794,
+        "estimator": "utf8_bytes_v1",
+        "included": [
+          "goal",
+          "capabilities",
+          "session",
+          "memory:660bd0de-1f8a-46ff-b98b-1b766782d9ee"
+        ],
+        "input_token_limit": 32768,
+        "reserved_output_tokens": 2048
+      },
+      "created_at": 1790021827.0415387,
+      "id": "fc7fe4fd-6d0e-42fd-9d5a-b0a584328638",
+      "method": "goal_analysis",
+      "session_id": "dfa05103-ce16-4d3b-af7b-30faed73c7bf",
+      "session_revision": 6,
+      "status": "fits"
+    }
+  ],
+  "status": "passed",
+  "task_id": "81688bf9-7b02-4c47-af17-644f15fe979b",
+  "snapshot_id": "dbe5b168-2b9f-47d0-9411-c950ef2da217",
+  "recovered_plan": {
+    "steps": [
+      {
+        "args": {
+          "metadata": {
+            "encoding": "utf8",
+            "kind": "document",
+            "robot_id": "r1",
+            "source": "operator-recovery-constraint"
+          },
+          "path": "/home/gflash/agents/unitree_sim_isaaclab/robot_agent_framework/.runtime/replanning-context-validation/3238304f-e66d-4fea-b3c0-7307b3be6521/backup.md"
+        },
+        "deps": [],
+        "id": "ingest_backup",
+        "skill": "file.ingest"
+      },
+      {
+        "args": {
+          "asset_id": {
+            "$ref": "ingest_backup.asset_id"
+          }
+        },
+        "deps": [
+          "ingest_backup"
+        ],
+        "id": "verify_asset",
+        "skill": "asset.verify"
+      }
+    ],
+    "verification": "verify_asset"
+  },
+  "actual_result": {
+    "evidence": [
+      {
+        "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+        "source": "asset:7119e592-c27f-4944-ab7b-4eae1859fad9"
+      }
+    ],
+    "execution_id": "fbc7909d-be2a-49fa-8ff0-7e883bd77075",
+    "output": {
+      "sha256": "f14fdfd0852aec1978439cf0743416705e08b8135fa2e4c6100ab1457b1904d5",
+      "size": 2669,
+      "verified": true
+    },
+    "quiescent": true,
+    "status": "succeeded"
+  },
+  "context_manifest": {
+    "dropped": [],
+    "estimated_input_tokens": 12014,
+    "estimator": "utf8_bytes_v1",
+    "id": "a2121c5e-d97c-4b6b-9626-eb9bf20fb4a2",
+    "included": [
+      "goal",
+      "task-state",
+      "capabilities",
+      "session-summary",
+      "session",
+      "memory:660bd0de-1f8a-46ff-b98b-1b766782d9ee"
+    ],
+    "input_token_limit": 16868,
+    "phase": "replanning",
+    "renderer_version": "role-aware-v1",
+    "request_id": "163a8a69-167e-460f-a861-78fd07b69b44",
+    "reserved_output_tokens": 2048,
+    "sources": [
+      {
+        "authority": "operator",
+        "evidence_ids": [],
+        "id": "goal",
+        "metadata": {},
+        "source": "goal_context"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "task-state",
+        "metadata": {},
+        "source": "runtime_ledger"
+      },
+      {
+        "authority": "framework",
+        "evidence_ids": [],
+        "id": "capabilities",
+        "metadata": {},
+        "source": "frozen_skill_catalog"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session-summary",
+        "metadata": {
+          "covered_turns": [
+            {
+              "id": "d6c54e0c-549a-4e3c-a321-c69ab117239c",
+              "record_hash": "39dcb28eba0bb2357f2dd7ad9027c5c5da78b97ece3e7d3eddd0dc98cfbe01f9"
+            },
+            {
+              "id": "d2c0866c-d599-4e47-971c-ccde176b8deb",
+              "record_hash": "7b95cf6cfb6ce1490e7175225505694a1ae456dd4a65ce5b398c0d3e95a3f5f6"
+            },
+            {
+              "id": "078db5ab-65f3-42b9-b46b-fa26861cdc0f",
+              "record_hash": "d381e8cc386632b0df02246710ad621e481dba5ce89090fe3d2892c7ce052a68"
+            }
+          ],
+          "model_response_id": "44553ba9-82e8-4c25-ad15-2ea3d8ba8428",
+          "model_response_ids": [
+            "44553ba9-82e8-4c25-ad15-2ea3d8ba8428"
+          ],
+          "pinned_turn_ids": [
+            "2708663e-8c2a-4609-8b34-fe5117466596"
+          ],
+          "record_hash": "ce02eedbdfa748db9a3a9fdbc8b10952cee3fde68e1d7fb248074e48e76799e9",
+          "summary_id": "10f8f591-67bf-4530-9166-7e3808af37c7"
+        },
+        "source": "session_summary"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [],
+        "id": "session",
+        "metadata": {
+          "revision": 7,
+          "session_id": "dfa05103-ce16-4d3b-af7b-30faed73c7bf",
+          "snapshot_id": "fdc4094e-26d8-4728-b381-9c8febe98189"
+        },
+        "source": "session_ledger"
+      },
+      {
+        "authority": "data",
+        "evidence_ids": [
+          "cb78ee8d-cf42-4e33-8d11-995058578813"
+        ],
+        "id": "memory:660bd0de-1f8a-46ff-b98b-1b766782d9ee",
+        "metadata": {
+          "record_hash": "d3822f9874e9c0941a36d2e19d39bedd4d8d98298a92e958a47eae633edf6c0c",
+          "valid_until": null,
+          "verified_at": 1790021918.8045237
+        },
+        "source": "scoped_memory_catalog"
+      }
+    ]
+  },
+  "model_response_id": "cae7d004-cc2a-4485-871d-cc56e6cf7f71",
+  "provider_response_id": "chatcmpl-4cdfba08-8335-9bb0-910c-3bc0231ae4ed"
+}

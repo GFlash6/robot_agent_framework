@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "source_report": "report.json",
+  "source_restoration": "exact original first-turn content from passed proof; policy and summary unchanged",
+  "model_calls": 0,
+  "screenshots": [
+    "desktop-final.png",
+    "mobile-final.png"
+  ]
+}
