@@ -711,7 +711,7 @@ robot_agent_framework/
 | 7 | Operator Control | 鉴权 Command API、心跳、接管和数据预览 | 控制请求与真实结果全链路审计 |
 | 8 | Production & Fleet | Postgres、对象存储、多机器人适配 | 故障注入、迁移恢复和多机资源冲突验证 |
 
-这与 `BUILD_ROADMAP.md` 保持一致。当前下一项仍应是 fencing，而不是增加多 Agent 角色或默认安装向量数据库、场景图、Open-RMF 和完整行为树。
+2026-10-06 更新：上表为 2026-09-08 的架构增量顺序，其中 Execution Authority 的 HTTP 部分已完成。当前构建顺序以 `BUILD_ROADMAP.md` 为准：先完成工程基线、本体抽象与仿真基座，然后依次推进世界状态与技能契约、执行监测与三层反馈环、长程层级拆解；仿真与 G1 实机并行。仍不增加多 Agent 角色，也不默认安装向量数据库、场景图、Open-RMF 和完整行为树。
 
 ## 16. 暂不采用的设计
 

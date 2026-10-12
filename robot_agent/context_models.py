@@ -18,7 +18,8 @@ CONTEXT_KINDS = {
     "operator",
 }
 AUTHORITIES = {"framework", "operator", "data"}
-PHASES = {"planning", "replanning", "subplanning", "automation_diagnosis", "history_summary"}
+PHASES = {"planning", "replanning", "repair", "subplanning", "task_planning", "task_acceptance", "automation_diagnosis",
+          "history_summary"}
 TASK_RELATIONS = {
     "decomposes_to",
     "depends_on",

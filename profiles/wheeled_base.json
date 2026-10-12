@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "embodiment": "wheeled_base",
+  "description": "Generic differential-drive base with a fixed camera; no arm and no posture control.",
+  "frames": {"world": "map", "base": "base_link", "camera": "camera_link"},
+  "clock_domain": "system",
+  "resources": {"drive": 1, "camera": 1, "gpu": 1, "locomotion": 1},
+  "skills": {
+    "robot.observe_state": {},
+    "robot.stop": {},
+    "base.move_velocity": {"resources": {"drive": 1}, "control_domain": "locomotion"},
+    "base.navigate_to": {"resources": {"drive": 1}, "control_domain": "locomotion"},
+    "perception.locate_object": {"resources": {"camera": 1, "gpu": 1}},
+    "verify.object_at": {"resources": {"camera": 1, "gpu": 1}}
+  },
+  "safety_limits": {"max_linear_mps": 0.8, "max_angular_rps": 1.2, "calibrated": false},
+  "notes": "Second embodiment for P6. Its state adapter reports robot.mobility_ready when the drives are enabled, so no stand skill exists; manipulation goals must be refused because no manip.* skill is bound."
+}

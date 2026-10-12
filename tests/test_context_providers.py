@@ -51,8 +51,10 @@ def test_providers_resolve_actual_selected_execution_and_bytes(tmp_path):
             robot_id='r1', session_id=session['id'], task_id=task['id'], revision=task['revision'], generation=task['generation'])
         bundle = ContextBuilder(store).build(request, runtime.catalog())
         fragments = {f.id: f for f in bundle.fragments}
-        assert {d['provider'] for d in bundle.diagnostics} == {'goal-capabilities', 'task-state', 'session', 'memory', 'assets', 'selection'}
-        assert all(d['fragment_ids'] for d in bundle.diagnostics)
+        assert {d['provider'] for d in bundle.diagnostics} == {'goal-capabilities', 'task-state', 'session', 'memory', 'assets', 'selection', 'world-state'}
+        # No world facts were recorded for r1, so that provider contributes nothing rather than invented state.
+        assert all(d['fragment_ids'] for d in bundle.diagnostics if d['provider'] != 'world-state')
+        assert next(d for d in bundle.diagnostics if d['provider'] == 'world-state')['status'] == 'empty'
         assert fragments['asset-evidence'].content[0]['sha256'] == hashlib.sha256(source.read_bytes()).hexdigest()
         assert fragments['ui-selection'].content['selected_steps']['verify']['result']['output']['verified'] is True
         nodes = fragments['task-state'].content['nodes']
@@ -110,7 +112,7 @@ def test_builtin_provider_context_does_not_alias_caller_or_other_builds(tmp_path
         assert next(f for f in first.fragments if f.id == 'goal').content['entities'][0]['tags'] == ['original']
         assert second.request.goal.entities[0]['tags'] == ['original']
         empty = [d for d in first.diagnostics if d['status'] == 'empty']
-        assert {d['provider'] for d in empty} == {'task-state', 'session', 'memory', 'assets', 'selection'}
+        assert {d['provider'] for d in empty} == {'task-state', 'session', 'memory', 'assets', 'selection', 'world-state'}
         assert all(not d['fragment_ids'] for d in empty)
         assert not store.list('model_responses')
     finally:

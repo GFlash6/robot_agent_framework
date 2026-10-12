@@ -117,3 +117,10 @@ Momo revision 151→152 更新对象与证据；152→153 添加两条由确定�
 ## 2026-09-22 近期增量同步
 
 本轮同步 revision 155→156：审阅当前代码与实际验收记录，更新19个已有对象，保留全部41对象/90关系；更新12条已应用关系的支持证据，历史删除提案保留。canonical validate、diff、revision guard、最终关系审计通过；仅历史删除提案仍含过期来源及人工确认要求。无新模型调用、mock、仿真或设备操作。
+
+
+## 2026-10-07 Agent 闭环五项能力（L0）
+
+按 2026-10-06 方向实现 Agent 层：world_state.py（事实、四种有效性、三值谓词、地图换代失效）、monitor.py（进度/停滞/不变量、响应内 observations）、Runtime 前置条件门控和效果确认（verifying）、内环抽取、Runtime.repair 中环和修复→重规划升级阶梯、missions.py（层级分解、按需展开、世界状态验证子任务、重新分解、取消）、embodiment.py（9 项抽象技能、G1/轮式底盘 Profile、仿真/实机绑定）、WorldStateProvider（CTX-5）、repair/decomposition 模型方法、DBOS mission 工作流、CLI。另外把文件锁和资产目录 fsync 改为兼容 Windows，使本机可以跑离线回归。
+
+验证：离线回归 131 项通过（新增 tests/test_world_agent.py 17 项），另有 13 项历史测试本来就过期（K9）。CLI 加 DBOS worker 冒烟通过：操作者分解的 mission 停在 verifying，观测到达后才成功。未调用模型，没有仿真或设备操作；Momo 图未同步。说明见 docs/AGENT_LOOP.md。

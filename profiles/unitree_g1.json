@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "embodiment": "unitree_g1",
+  "description": "Unitree G1 humanoid: legged base, waist, two arms with dexterous hands, head camera.",
+  "frames": {"world": "map", "base": "pelvis", "camera": "head_camera"},
+  "clock_domain": "system",
+  "resources": {
+    "legs": 1, "waist": 1, "left_arm": 1, "right_arm": 1, "left_hand": 1, "right_hand": 1,
+    "head_camera": 1, "gpu": 1, "locomotion": 1, "manipulation": 1
+  },
+  "skills": {
+    "robot.observe_state": {},
+    "robot.stand": {"resources": {"legs": 1, "waist": 1}, "control_domain": "locomotion"},
+    "robot.stop": {},
+    "base.move_velocity": {"resources": {"legs": 1, "waist": 1}, "control_domain": "locomotion"},
+    "base.navigate_to": {"resources": {"legs": 1, "waist": 1}, "control_domain": "locomotion"},
+    "perception.locate_object": {"resources": {"head_camera": 1, "gpu": 1}},
+    "manip.pick": {"resources": {"right_arm": 1, "right_hand": 1, "waist": 1}, "control_domain": "manipulation"},
+    "manip.place": {"resources": {"right_arm": 1, "right_hand": 1, "waist": 1}, "control_domain": "manipulation"},
+    "manip.retract": {"resources": {"right_arm": 1, "waist": 1}, "control_domain": "manipulation"},
+    "verify.object_at": {"resources": {"head_camera": 1, "gpu": 1}}
+  },
+  "safety_limits": {"max_linear_mps": 0.5, "max_angular_rps": 0.8, "calibrated": false},
+  "notes": "Safety limits are conservative software bounds, not calibrated G1 limits. robot.stop holds no resources so it can always be dispatched; it is a controller stop, not the hardware e-stop. Waist is shared by locomotion and manipulation so the body never walks and grasps at once."
+}

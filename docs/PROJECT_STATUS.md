@@ -1,398 +1,429 @@
 # 机器人 Agent 框架工程状态
 
-更新日期：2026-09-22
-工程阶段：`implementation`  
-整体状态：**进行中**  
-当前版本：`0.1.0`  
+更新日期：2026-10-12
+工程阶段：`implementation`
+整体状态：**进行中**
+当前版本：`0.1.0`
 维护范围：`robot_agent_framework/`
 
-2026-09-22 新增应用层：统一动作/鉴权/幂等命令已实现；Session、界面选中对象、资产证据及模型原始输入响应已接入。当前 `qwen3.7-plus` 的实际计划已由 worker 完成文件归档与哈希校验，多轮澄清和失败节点解释通过，浏览器节点解释已验证。详见 [应用层说明](APPLICATION_LAYER.md) 与 [实施跟踪](APPLICATION_LAYER_PLAN.md)。此前模型/只读 UI 的条目保留历史范围，机器人与实时环境验收仍未完成。
+这是工程状态的统一入口，按**主线**和**支线**记录每个模块及细项的完成情况。构建顺序与退出条件见 [BUILD_ROADMAP.md](BUILD_ROADMAP.md)；待决问题见 [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)；目标架构见 [DETAILED_ARCHITECTURE.md](DETAILED_ARCHITECTURE.md)；历史验证边界见 [VALIDATION.md](VALIDATION.md) 与 [UI_VALIDATION.md](UI_VALIDATION.md)。
 
-记忆上下文增量：已新增共享 memory.search / session.attach-memories 动作，按机器人范围检索、先过滤再限制数量、复核来源字节、绑定记录版本并检查失效。真实模型从记忆读取源文件路径后生成计划，实际 worker 归档与 SHA256 核验通过；UI 记忆选择已完成真实浏览器/模型/worker 验收；摘要已有后续实际验收，实时世界状态仍未完成。证据见 `docs/validation/memory-context-live.json`。
+## 0. 项目目标与方向决策
 
-自动重规划增量：已保存提交时会话/语义目标快照，重规划继承人工约束与绑定记忆，同时读取最新任务失败账本。实际文件故障→真实模型备用路径计划→worker 哈希核验通过；证据见 [重规划验证](validation/replanning-context-live.json)。UI 记忆选择已接通；长历史摘要与真机验收仍待完成。
+### 0.1 目标
 
-历史摘要增量：显式 session.summarize 已接通，保留近期/固定消息原文与完整历史，记录摘要来源哈希并作为 data 级上下文使用；实际模型摘要、后续规划和 worker 哈希验证通过。超大历史分块已通过真实模型、执行和并发校验；共享会话动作的可配置自动预算策略已通过真实验收；工作台摘要交互已通过真实浏览器验收；真机验收仍未完成。证据：[session-summary-live.json](validation/session-summary-live.json)。
+构建**面向通用机器人本体的 Agent 系统**。核心能力共五项：
 
-这是工程状态的统一入口，长期记录每个模块及其细项的完成情况。分阶段顺序见 [BUILD_ROADMAP.md](BUILD_ROADMAP.md)，需求和待决问题保留在 [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)，第一版执行契约见 [ARCHITECTURE.md](ARCHITECTURE.md)，完整目标分层、接口、状态机和案例见 [DETAILED_ARCHITECTURE.md](DETAILED_ARCHITECTURE.md)，实际验证边界见 [VALIDATION.md](VALIDATION.md) 与 [UI_VALIDATION.md](UI_VALIDATION.md)。Momo 生命周期文件只记录图状态、决策和交接，不再承担这份详细清单。
+| 能力 | 含义 |
+|---|---|
+| 长程任务拆解 | 把高层目标拆成层级任务，执行中按需展开和修订 |
+| 子技能编排 | 把原子技能组织成可执行图，管理依赖、条件、资源、fallback 和抢占 |
+| 技能执行监测 | 在执行过程中跟踪进度、检测异常，并根据观测判断是否真的完成 |
+| Loop 回环反馈 | 内环（技能级重试）、中环（子任务局部修复）、外环（目标级重规划或请求人工）三层闭环 |
+| 世界状态维护 | 持续维护带时间、坐标系、置信度和来源的机器人与环境状态，供规划、监测和验证使用 |
 
-## 状态口径
+执行权威、资源控制、持久恢复和证据追溯是支撑这五项能力的**执行内核**，不是最终目标。
+
+### 0.2 方向决策（2026-10-06，用户确认）
+
+1. **仿真与实机并行。** 两条轨道实现同一套 SkillSpec 和执行状态语义。仿真轨先关闭契约和算法问题，实机轨关闭物理问题。实机轨被外部输入阻塞时，仿真轨照常推进。
+2. **G1 为首个本体。** 仿真和实机都先以 Unitree G1 落地。
+3. **适配多种机器人本体。** Agent 层不依赖具体本体。本体差异由本体描述（Embodiment Profile）和技能适配层承担，并且必须用第二种本体验证。
+
+**约束变更：** 2026-09-22 的"禁止仿真"约束从此解除。以下约束保持不变：
+- mock 和替身响应不能作为验收证据；
+- AI 调用必须使用环境里的真实模型配置；
+- 仿真证据单独分级，不能关闭实机项。
+
+## 1. 状态口径与证据等级
 
 | 状态 | 判定标准 |
 |---|---|
-| 已完成 | 当前声明的软件范围已有生产实现，并有相应代码、测试或实际运行记录；只代表该行范围完成。 |
-| 进行中 | 已有部分实现，但仍缺生产能力、关键决策或适当层级的实际验收。 |
-| 未完成 | 尚无生产实现，或只有接口预留、研究材料和元数据契约。 |
+| 已完成 | 当前声明的软件范围已有生产实现，并有对应代码、测试或实际运行记录；只代表该行所写的范围。 |
+| 进行中 | 已有部分实现，但仍缺生产能力、关键决策或适当等级的验收。 |
+| 未完成 | 没有生产实现，或只有接口预留、研究材料、契约文档。 |
 
-HTTP 请求成功、模型自述成功、软件测试通过和机器人真实完成是不同层级的证据。本文不会用前一种证据替代后一种。状态也不使用估算百分比。
-
-## 总体概览
-
-| 模块 | 总体状态 | 当前结论 |
-|---|---|---|
-| 项目边界与开源调研 | 已完成 | 单一项目范围已确认；第一轮 41 个有效仓库研究和第一版组件选择已完成。 |
-| 任务模型与计划 | 进行中 | DAG、人工计划、计划校验和模型适配已实现；真实模型长程分解与任务族验证仍缺。 |
-| 编排与技能执行 | 进行中 | 依赖调度、实际输出引用、技能协议和本地数据技能已实现；机器人技能接入和完整行为后端未完成。 |
-| 失败、恢复与打断 | 进行中 | 有界恢复、打断和 HTTP 文件服务 fencing/reconciliation 已有证据；通用补偿、设备端控制权与硬件急停仍缺。 |
-| 多任务与资源调度 | 进行中 | 单机多任务、多资源原子分配和优先级抢占已有第一版；真机资源配置和跨主机调度未完成。 |
-| 持久化与运行部署 | 进行中 | DBOS 本地 SQLite、账本和单 worker 恢复可运行；Postgres、热升级、高可用和性能验收未完成。 |
-| 模型规划与重规划 | 进行中 | 当前环境真实模型已完成文件规划、执行和失败后重规划；跨任务族质量及机器人闭环仍待验收。 |
-| 上下文构造与会话 | 进行中 | Session、Memory、摘要/预算、Provider、完整 Bundle 和快照绑定已有实际验证；WorldState、全调用点诊断及质量基准未完成。 |
-| 多模态数据与记忆 | 进行中 | 资产目录、哈希、时空元数据、MCAP/rosbag2 和基础检索已实现；真实传感器、地图失效和语义记忆未完成。 |
-| 解耦流程 UI | 进行中 | 只读 UI、观察 API 和独立真实问答测试网关已完成；独立应用服务的控制入口已实现；运行端心跳、3D/视频和远程认证未完成。 |
-| 多机器人 | 未完成 | 仅有 `robot_id` 和资源命名空间预留，尚无多机器人协调实现与验收。 |
-| 验证体系 | 进行中 | 软件、文件、HTTP、恢复、ROS2 诊断录制和浏览器验证已有证据；模型、机器人及传感器现场验收未完成。 |
-| Momo 与状态维护 | 进行中 | 项目已注册；后续多项增量尚未与 Momo 图逐项核对，不能宣称持续同步完成。 |
-
-## 1. 项目边界、调研与依赖
-
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
+| 证据等级 | 含义 | 能关闭 | 不能关闭 |
 |---|---|---|---|
-| 单一工程边界 | 已完成 | `robot_agent_framework/` 为正式单一项目，探索和目标趋向导航只作为检验场景。 | [用户需求](USER_REQUIREMENTS.md)、Momo 正式快照 |
-| 第一轮开源调研 | 已完成 | 调研 41 个有效仓库，保存 110 份固定提交材料及哈希。 | [研究报告](research/REPORT.md)、[仓库矩阵](research/REPOSITORY_MATRIX.md)、[来源校验](research/SOURCE_VALIDATION.json) |
-| 第一版组件选择 | 已完成 | 采用 DBOS、py_trees 条件链、MCAP、jsonschema、httpx；前端采用 React、TypeScript、React Flow、Vite。 | [架构](ARCHITECTURE.md)、`pyproject.toml`、`ui/package-lock.json` |
-| 选定版本分发许可审查 | 进行中 | 研究阶段已记录仓库级许可证，尚未完成最终分发范围的逐文件和依赖审查。 | 台账 R10；确定分发范围后完成固定版本审查 |
-| DimOS memory 深层复用 | 未完成 | 只完成源码研究；没有集成 DimOS memory、其向量能力或完整模块运行时。 | 台账 R03；需真实数据读写、依赖边界和查询验证 |
+| **L0 软件集成** | 实际文件、HTTP 服务、进程、账本和真实模型调用 | 契约、状态机、恢复语义、模型接入 | 任何物理行为 |
+| **L1 仿真** | 仿真器中的机器人、传感器和场景（`evidence_level=simulation`） | 技能契约、世界状态逻辑、监测和反馈算法、长程分解 | 真机时延、标定、碰撞、物理停止、硬件急停 |
+| **L2 实机** | 真实 G1 或其他本体的执行和独立观测（`evidence_level=hardware_observation`） | 对应技能或任务族的物理闭环 | 未覆盖的任务族和环境 |
 
-## 2. 任务模型、分解与计划
+表格中的"证据"列标明当前达到的最高等级。HTTP 成功、模型自述成功、软件测试通过、仿真通过和实机完成是逐级递增的证据，本文不会用较弱的证据替代较强的结论，也不使用百分比估算。
 
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 任务、步骤和计划契约 | 已完成 | 定义任务/步骤状态、依赖、重试、fallback、最终验证节点和 schema 校验。 | `robot_agent/contracts.py`、`tests/test_contracts_memory.py` |
-| DAG 合法性检查 | 已完成 | 拒绝循环、缺失依赖以及无法通向最终验证节点的计划。 | `test_dag_rejects_cycles_and_unverified_completion` |
-| 操作者计划提交 | 已完成 | CLI 和 Runtime 可接收明确计划并持久化任务。 | `robot_agent/cli.py`、`robot_agent/runtime.py` |
-| 依赖输出引用 | 已完成 | 后续步骤只引用成功依赖的实际输出，不在计划中伪造结果。 | `Runtime._args`、真实 DAG 回归测试 |
-| 模型生成结构化 DAG | 已完成 | `qwen3.8-max` 经实际服务返回两步 DAG，原始响应入本地账本，计划和最终 verifier 契约通过。 | [模型规划记录](validation/model-planning-qwen3.8-max.json)、`Planner.plan` |
-| 长程任务分解策略 | 进行中 | 框架可承载长 DAG 和修订，但尚未形成跨任务族的分解策略、上下文预算和质量评估。 | 用多任务族真实目标评测分解、执行和最终验证 |
-| 动态子任务/计划修订 | 进行中 | 计划修订、generation 和完整历史快照已实现；动态扩展仍缺实际模型与现场任务验证。 | `Runtime.revise`、计划历史回归测试 |
-| 探索与目标趋向导航实现 | 未完成 | 当前仅作为框架验收场景，没有实现探索算法、frontier 策略或拒止导航方案。 | 取得导航技能和地图接口后另行验收，不以框架测试替代 |
+## 2. 总体概览
 
-## 3. 编排、调度与技能系统
+### 2.1 主线
 
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 依赖就绪调度 | 已完成 | 仅派发依赖已成功且资源可获得的步骤。 | `Runtime.tick`、`tests/test_runtime.py` |
-| 技能注册与冻结契约 | 已完成 | 注册参数/输出 schema、资源、取消、重入和 verifier 属性；任务保存冻结 catalog。 | `Runtime.register`、`Runtime.submit` |
-| HTTP 执行协议 | 已完成 | 使用固定 execution ID 的执行、查询和取消协议；请求改变会被拒绝。 | [技能协议](SKILL_PROTOCOL.md)、`tests/test_http_execution.py` |
-| 本地文件技能 | 已完成 | `file.ingest`、`asset.verify`、分块 `file.copy` 操作实际文件并返回实际结果。 | `robot_agent/file_copy.py`、文件与浏览器集成测试 |
-| 成功结果判定框架 | 已完成 | 成功必须满足 execution ID、终态、quiescent、输出 schema、后置条件和非空来源证据。 | `robot_agent/contracts.py`、终态来源证据测试 |
-| 任务族后置条件 | 进行中 | 通用检查器已实现；导航、抓取等任务的独立观测指标和阈值尚未定义。 | 台账 Q03/Q04；需真实适配器观测与测量阈值 |
-| ROS2 Action/机器人技能适配 | 未完成 | 尚无实际机器人执行、查询、取消和停止回执适配器。 | 台账 Q02；至少接入一项真实技能并保留执行证据 |
-| 完整行为树执行后端 | 未完成 | py_trees 只用于结果条件链，没有完整行为树运行、halt 或可视化编辑器。 | 台账 R04；按真实技能需求决定是否引入 |
-| 机器人技能库 | 未完成 | 没有导航、感知、操作、充电等生产技能集合。 | 逐项定义输入、输出、资源、取消、重入、后置条件和证据 |
+| 编号 | 模块 | 状态 | 最高证据 | 当前结论 |
+|---|---|---|---|---|
+| A | 执行内核 | 进行中 | L0 | 调度、技能协议、资源、持久恢复和 HTTP fencing 已实现。缺补偿和人工接管、统一重试归属以及实机控制端隔离 |
+| B | 长程任务拆解 | 进行中 | L0 | 2026-10-12 按 [L0 规划层设计](../L0%20规划层设计.md) 重写：L0 一次调用输出 TaskPlan（理解、处境、落地、可行性、子任务、回复），规则前后夹检；子任务带 achieve/check/obtain 目标并由世界状态验证；任务管理器是状态和结果的唯一写入方；重规划、澄清、验收已实现（[AGENT_LOOP.md](AGENT_LOOP.md) §6）。原 Mission 分解已删除。真实模型规划质量和评测集未验收 |
+| C | 子技能编排 | 进行中 | L0 | 依赖、引用、fallback、重试、资源、抢占，以及世界状态前置条件和效果确认已实现；抽象技能目录 9 项。没有条件分支，也没有真实技能实现 |
+| D | 技能执行监测 | 进行中 | L0 | 进度反馈、停滞检测、不变量监测（违反即取消）、执行中观测上报、基于独立观测的效果确认已实现。没有心跳，阈值未标定 |
+| E | Loop 回环反馈 | 进行中 | L0 | 内环、中环（保留已验证进展的局部修复）、子任务重新编排和 L0 重规划（保留已成功子任务）组成升级阶梯；世界状态否定效果或不变量会触发失败并进入该阶梯。没有补偿和人工接管协议 |
+| F | 世界状态维护 | 进行中 | L0 | WorldState 模型、四种有效性、乱序/超前/冲突处理、expected 与 observed 区分、地图版本失效、三值谓词和 CTX-5 Provider 已实现。没有真实或仿真状态流接入 |
+| G | 本体抽象与多本体适配 | 进行中 | L0 | 抽象技能、Embodiment Profile（G1、轮式底盘）、仿真/实机轨道绑定、安全限值写入 schema 已实现。没有 ROS2 或厂商适配器 |
+| H | 仿真轨 | 未完成 | — | 仿真器尚未选定，也没有 G1 仿真环境。架构文档已定义 `provider` 和 `evidence_level` |
+| I | 实机轨（G1） | 未完成 | 文档 | 接入契约已整理。正在等设备连接信息，还没有只读采集和运动技能 |
 
-## 4. 失败、fallback、恢复与打断
+### 2.2 支线
 
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 有界技能重试 | 已完成 | 只有声明 `replay_safe` 的技能可自动重试，次数受计划限制。 | `robot_agent/runtime.py` |
-| fallback 选择 | 已完成 | 原候选真实失败后依次选择兼容替代，最终结果仍按原步骤契约检查。 | `test_fallback_uses_actual_failure_and_preserves_original_contract` |
-| 暂停、取消与恢复 | 已完成 | 控制请求先取消活动执行，确认停止后转换状态；暂停任务可恢复。 | `test_pause_before_dispatch_and_resume`、HTTP 取消测试 |
-| 优先级抢占 | 已完成 | 高优先级任务可请求低优先级任务暂停，资源释放仍依赖停止证据。 | `Runtime.preempt` |
-| 未知结果处理 | 已完成 | 不可达执行保持 `unknown`，不重发、不释放资源。 | `test_unreachable_service_does_not_release_or_retry` |
-| 进程故障恢复 | 已完成 | worker 被杀后恢复原 execution ID，查询原执行，不重复派发。 | `test_worker_kill_recovers_same_remote_execution_without_redispatch` |
-| 用户控制与迟到重规划竞争 | 已完成 | 用户取消和较新 generation 不被迟到模型响应覆盖。 | `test_cancel_wins_over_late_automatic_plan_revision` 等 |
-| 跨层重试归属 | 进行中 | 框架有技能和模型预算；机器人驱动/行为后端接入后仍需确定唯一重试责任。 | 台账 R06；验证无重复副作用 |
-| 补偿与人工恢复 | 未完成 | 没有通用补偿工作流、持物状态恢复或人工接管协议。 | 台账 Q08；需实际补偿技能和恢复前提 |
-| 控制端隔离旧执行者 | 进行中 | 显式 HTTP fencing 已在真实文件服务验证旧令牌拒绝、重启持久化及 worker 原执行恢复；机器人驱动端尚未接入。 | 见技能协议与 validation/fencing-live.json；物理控制权及停止仍需现场验证 |
-| 硬件急停 | 未完成 | 软件取消不等于硬件急停，没有独立安全链路及停止回执接入。 | 台账 Q07；需硬件接口和现场验收 |
+| 编号 | 模块 | 状态 | 最高证据 | 当前结论 |
+|---|---|---|---|---|
+| S1 | 上下文构造与会话 | 进行中 | L0 | Session、Memory、摘要和预算、Provider、完整上下文包、快照以及输入重建都有真实模型证据。WorldState Provider（CTX-5）并入主线 F |
+| S2 | 应用层与工作台 | 进行中 | L0 | M1–M3 已实现并验收。M4（真机接入）并入主线 H 和 I |
+| S3 | 观察 UI | 进行中 | L0 | 只读 API、DAG 可视化、问答测试和上下文查看/对比已完成。缺心跳、传感器和 3D 预览、远程认证 |
+| S4 | 多模态数据与记忆 | 进行中 | L0 | 资产目录、哈希、时空元数据、MCAP、rosbag2 和全文检索已实现。没有真实或仿真传感器流，也没有地图失效和语义记忆 |
+| S5 | 事件自动诊断 | 进行中 | L0 | 失败事件诊断、中断恢复和工作台已验收。只解释，不触发恢复动作 |
+| S6 | 生产部署与多机器人 | 未完成 | — | 只有本地 SQLite 加单 worker |
+| S7 | 工程基线与治理 | 进行中 | — | 开发环境、仓库卫生、CI 和统一回归都有缺口（见第 5 节） |
+| S8 | 开源调研与许可 | 进行中 | — | 第一轮 41 个仓库调研已完成。仿真器和本体适配方向还需补充调研，许可审查未完成 |
 
-## 5. 多任务与资源管理
+---
 
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 多任务账本 | 已完成 | 可同时保存并推进多个任务，状态和事件独立。 | `robot_agent/store.py`、Runtime 测试 |
-| 机器人资源命名空间 | 已完成 | 资源折算为 `robot_id/resource`，避免机器人间名称碰撞。 | `Runtime.resource_name` |
-| 容量与多资源原子获取 | 已完成 | SQLite 事务内检查和写入全部资源，避免部分占用和超配。 | `test_resource_claims_across_connections_do_not_overallocate` |
-| 资源别名冲突保护 | 已完成 | 别名折算冲突不会少计容量。 | `test_resource_alias_collision_cannot_underclaim_capacity` |
-| 停止前资源保留 | 已完成 | 只有终态且 quiescent 才释放；未知状态继续占用。 | 架构契约及运行测试 |
-| 真机资源模型 | 进行中 | 容量机制已实现，尚无底盘、双臂、夹爪、相机、GPU 的实际清单及跨资源约束。 | 台账 Q05；用实际并发任务验证 |
-| 多机器人协调 | 未完成 | 仅预留 robot ID 和资源命名空间，没有跨机器人任务分配、队伍状态或协同恢复。 | 明确多机器人范围后设计并实际验收 |
-| 跨主机租约与仲裁 | 未完成 | 当前单账本已实现持久 fencing token；没有跨账本/跨主机一致性与租约仲裁。 | 生产部署方案及实际故障验证 |
+## 3. 主线细项
 
-## 6. 持久化、并发与部署
+### A. 执行内核
 
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 任务/执行/事件持久账本 | 已完成 | SQLite 保存任务、步骤、执行、控制、事件、资源和计划历史。 | `robot_agent/store.py` |
-| DBOS 持久工作流 | 已完成 | DBOS 2.31.0 管理本地工作流恢复，单 worker 锁限制重复工作进程。 | `robot_agent/durable.py`、进程恢复测试 |
-| 计划历史与版本契约 | 已完成 | 修订时保存原 plan、steps、catalog、revision、generation 和保存时间；旧账本缺失字段保持可读并明确标记。 | `Runtime.revise`、计划历史回归测试、`ui/src/TaskView.tsx` |
-| 本地单 worker 部署 | 已完成 | Python 3.10 / ROS2 Humble 环境和 CLI 可运行。 | [README](../README.md)、第一版验证 |
-| Postgres 生产部署 | 未完成 | 未配置、未迁移、未做恢复和吞吐验证。 | 台账 Q13/R01 |
-| 多进程/跨机器高可用 | 未完成 | 没有热升级、主从切换或网络分区下的任务与资源验收。 | 明确拓扑后进行故障注入和一致性验证 |
-| 性能与容量上限 | 未完成 | 没有大规模任务、事件、资产和执行历史的基准数据。 | 实际规模、延迟/吞吐目标及压测结果 |
+#### A1 调度与技能协议
 
-## 7. 模型规划与重规划
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 依赖就绪调度 | 已完成 | L0 | 只派发依赖已成功且能拿到资源的步骤 | `Runtime.tick`、`tests/test_runtime.py` |
+| 技能注册与冻结契约 | 已完成 | L0 | 注册参数和输出 schema、资源、取消、重入和 verifier 属性。任务保存时冻结技能目录 | `Runtime.register`、`Runtime.submit` |
+| HTTP 执行协议 | 已完成 | L0 | 用固定 execution ID 执行、查询和取消，请求内容变化会被拒绝 | [技能协议](SKILL_PROTOCOL.md)、`tests/test_http_execution.py` |
+| 本地文件技能 | 已完成 | L0 | `file.ingest`、`asset.verify`、`asset.verify-set`、分块 `file.copy` 操作实际文件 | `robot_agent/file_copy.py`、[多文件验收](MULTIFILE_VALIDATION.md) |
+| 成功结果判定 | 已完成 | L0 | 成功必须同时满足：execution ID 一致、终态、已静止（quiescent）、输出 schema、后置条件和非空来源证据 | `robot_agent/contracts.py` |
+| 动作发现契约 | 已完成 | L0 | `GET /actions` 返回目录版本、每个动作的版本和哈希、副作用类别、幂等声明 | [应用层说明](APPLICATION_LAYER.md) |
 
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 显式模型配置 | 已完成 | 要求实际 endpoint、model 和可选 token 环境变量；没有默认模型。 | `robot_agent/planner.py` |
-| 实际 HTTP 请求与原文保存 | 已完成 | 使用 httpx 请求兼容端点，保存 HTTP 状态和原始正文。 | `Planner.plan` |
-| 响应内容校验 | 已完成 | 检查非空内容、finish reason、JSON 和计划契约；传输成功不算计划成功。 | Planner 及失败路径测试 |
-| 缺配置/连接失败处理 | 已完成 | 不生成默认计划，不提交假任务；失败记录消耗有界预算。 | `tests/test_durable_planner.py` |
-| 自动重规划框架 | 已完成 | 支持最大次数、注册 verifier、无活动执行前修订及 generation 保护。 | Runtime/Planner 回归测试 |
-| 实际模型成功路径 | 进行中 | qwen3.7-plus 的目标分析、规划、实际文件执行、哈希核验及重规划已有证据；机器人任务仍未验收。 | [文件闭环](validation/multifile-live.json)、[重规划](validation/replanning-context-live.json) |
-| 长程规划质量评估 | 未完成 | 没有不同任务族、上下文长度、失败反馈和重规划质量基准。 | 定义数据集与真实执行评价，不能用模型自评 |
+#### A2 失败、恢复与控制权
 
-### 7.1 上下文构造实施计划与状态
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 有界技能重试 | 已完成 | L0 | 只有声明了 `replay_safe` 的技能才能自动重试，次数受计划限制 | `robot_agent/runtime.py` |
+| fallback 选择 | 已完成 | L0 | 原技能真实失败后依次换用兼容替代，结果仍按原步骤契约检查 | `test_fallback_uses_actual_failure_and_preserves_original_contract` |
+| 暂停、取消与恢复 | 已完成 | L0 | 先取消正在执行的动作，确认停止后才转换状态 | `test_pause_before_dispatch_and_resume` |
+| 优先级抢占 | 已完成 | L0 | 高优先级任务可以请求低优先级任务暂停，资源要等停止证据才释放 | `Runtime.preempt` |
+| 未知结果处理 | 已完成 | L0 | 执行端不可达时保持 `unknown`，不重发，也不释放资源 | `test_unreachable_service_does_not_release_or_retry` |
+| 进程故障恢复 | 已完成 | L0 | worker 被杀后用原 execution ID 继续查询，不重复派发 | `test_worker_kill_recovers_same_remote_execution_without_redispatch` |
+| 用户控制与迟到重规划的竞争 | 已完成 | L0 | 用户取消和更新的 generation 不会被迟到的模型响应覆盖 | `test_cancel_wins_over_late_automatic_plan_revision` |
+| 跨动作幂等键 | 已完成 | L0 | 任务、会话和自动化共用同一套键归属检查，冲突返回 409 | [action-idempotency-live.json](validation/action-idempotency-live.json) |
+| 控制端隔离旧执行者 | 进行中 | L0 | HTTP 控制域单调令牌、旧令牌拒绝和重启后持久化已验证；新控制者可以显式核对并停止旧执行。机器人驱动端尚未接入 | [fencing-live.json](validation/fencing-live.json)、[fencing-reconciliation-live.json](validation/fencing-reconciliation-live.json)；需要 G1 适配器实现令牌拒绝（主线 I） |
+| 跨层重试归属 | 进行中 | L0 | 框架层有技能预算和模型预算。接入驱动和行为层后需要确定唯一的重试责任方 | 台账 R06；在仿真里验证没有重复副作用 |
+| 补偿与人工接管 | 未完成 | — | 没有补偿工作流、持物状态恢复或人工接管协议 | 台账 Q08；放在路线 P4 |
+| 故障矩阵 | 进行中 | L0 | 进程退出、迟到响应、取消竞争和令牌换代已覆盖。补偿失败、"控制器报告终态但仍在运动"、传感器时间不一致这几类没有覆盖 | [DETAILED_ARCHITECTURE.md §13.2](DETAILED_ARCHITECTURE.md)；按仿真和实机分别验收 |
+| 硬件急停 | 未完成 | — | 软件取消不等于硬件急停 | 台账 Q07；必须走 G1 自身的安全链路，需要现场验收 |
 
-目标是在不替换现有 Runtime、Planner、Memory 和模型调用边界的前提下，增加独立的上下文构造层。完整数据继续保存在各自权威存储中；每次模型调用只生成一个可追溯、受预算约束的上下文视图。
+#### A3 资源与持久化
 
-当前结论：Goal 语义分析、Session、Memory、摘要预算、任务状态 Provider 与完整 Bundle 已接入规划/重规划，并有真实模型与文件执行证据。WorldState、各模型方法的统一追溯和跨任务族评测仍未完成，因此本模块总体仍为**进行中**。
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 多任务账本 | 已完成 | L0 | 多个任务的状态和事件独立保存、独立推进 | `robot_agent/store.py` |
+| 资源命名空间 | 已完成 | L0 | 资源统一折算成 `robot_id/resource` | `Runtime.resource_name` |
+| 多资源原子获取与容量 | 已完成 | L0 | 在 SQLite 事务里一次性检查并写入全部资源，避免部分占用或超配；别名冲突不会少算容量 | `test_resource_claims_across_connections_do_not_overallocate` |
+| 停止前保留资源 | 已完成 | L0 | 只有终态且已静止才释放资源，未知状态继续占用 | 架构契约、运行测试 |
+| 持久账本与计划历史 | 已完成 | L0 | 保存任务、步骤、执行、控制、事件、资源和计划历史；修订时保存当时的 plan、steps 和 catalog | `Runtime.revise`、`ui/src/TaskView.tsx` |
+| DBOS 持久工作流 | 已完成 | L0 | DBOS 2.31.0 负责本地工作流恢复，单 worker 锁防止重复启动 worker | `robot_agent/durable.py` |
+| 本体资源模型 | 未完成 | — | G1 的腿、腰、双臂、灵巧手、头部相机和 GPU 还没有资源清单和跨资源约束 | 台账 Q05；随 Embodiment Profile 定义（主线 G） |
+
+### B. 长程任务拆解
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 任务、步骤和计划契约 | 已完成 | L0 | 定义了状态、依赖、重试、fallback、最终验证节点和 schema 校验 | `robot_agent/contracts.py` |
+| DAG 合法性检查 | 已完成 | L0 | 拒绝有环、依赖缺失、无法到达最终验证节点的计划 | `test_dag_rejects_cycles_and_unverified_completion` |
+| 模型生成结构化 DAG | 已完成 | L0 | 真实模型返回的计划要通过契约检查和"最终节点必须是 verifier"检查 | `Planner.plan`、[multifile-live.json](validation/multifile-live.json)（qwen3.7-plus，七节点） |
+| 目标语义分析与澄清 | 已完成 | L0 | GoalContext 记录原始输入、解释、歧义、疏漏和假设；分析和问讯使用不同的 System Prompt | `goal_analysis.py`、[goal-context-live.json](validation/goal-context-live.json) |
+| 层级任务树 | 进行中 | L0 | 指令→TaskPlan 子任务（编号 t1-02-PER-Q、依赖、目标原子、预算）→Runtime Task 技能 DAG；子任务 12 种状态；`task.parent` 指回子任务；DBOS 独立工作流 | `robot_agent/l0.py`、`task_plan.py`、`goals.py`、`task_manager.py`；`tests/test_task_plan.py`、`test_agent_driver.py`、`test_l0.py`；需要真实模型规划和仿真任务族验收 |
+| 按需展开 | 进行中 | L0 | 子任务依赖完成时，先检查 completion（已成立就跳过），再用当时的世界状态规划；Task 成功后由世界状态验证，否定则在预算内重新展开，用尽后重新分解剩余部分，再用尽则 needs_operator | `test_mission_retries_with_fresh_expansion_then_asks_the_operator`；需要真实模型证据 |
+| 以世界状态为规划输入 | 进行中 | L0 | WorldStateProvider 把带有效性的事实送入规划、修复和分解；能力目录包含前置条件、效果和不变量 | `test_planner_sees_world_contracts_and_world_state`；需要真实模型证据 |
+| 拆解质量评测集 | 未完成 | — | 没有任务族数据集，也没有评价标准 | 在仿真中定义多个任务族，按执行结果评价，不用模型自评 |
+| 导航和操作任务族实现 | 未完成 | — | 探索和导航算法属于下层技能，不在框架内实现 | 由技能库提供（主线 C） |
+
+### C. 子技能编排
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 依赖输出引用 | 已完成 | L0 | 后续步骤只能用 `$ref` 引用已成功依赖的实际输出 | `Runtime._args` |
+| 编排基础语义 | 已完成 | L0 | 依赖、重试、fallback、资源和抢占 | 见 A1、A2 |
+| 显式完成契约 | 已完成 | L0 | 操作者给出的完成契约独立于模型计划，任务接受后冻结；技能报告成功但验收不通过，仍判为失败 | [completion-contract-live.json](validation/completion-contract-live.json) |
+| 条件分支 / 行为树 | 未完成 | — | 没有条件节点；py_trees 只用于结果条件链 | 台账 R04；根据 G1 技能需求决定是用条件 DAG 还是行为树后端 |
+| 技能前置条件与效果 | 进行中 | L0 | 三值谓词。前置条件：unknown 时有界等待，false 时不派发；效果：先写 expected，再由动作结束后的他源观测确认 | `test_preconditions_gate_dispatch_on_world_state`、`test_effects_need_a_later_independent_observation`；需要仿真验收 |
+| 任务族后置条件 | 进行中 | L0 | 通用检查器已实现。导航和抓取的观测指标和阈值未定义 | 台账 Q03/Q04；先在仿真定义，再到实机校准阈值 |
+| 机器人技能库 | 进行中 | 契约 | 抽象技能契约 9 项（状态读取、站立、停止、速度移动、导航、物体定位、抓取、放置、物体位置验证），没有实现 | `robot_agent/embodiment.py`；仿真适配器实现后才有 L1 |
+
+### D. 技能执行监测
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 轮询查询与执行超时 | 已完成 | L0 | 每次 tick 查询执行状态，超时后对可取消技能发出 cancel | `Runtime.tick` |
+| 终态与后置条件判定 | 已完成 | L0 | 见 A1 的"成功结果判定" | `robot_agent/contracts.py` |
+| 进度与反馈流 | 进行中 | L0 | 协议新增 `feedback.progress` 和 `observations`；`file.copy` 返回实际进度 | [SKILL_PROTOCOL.md](SKILL_PROTOCOL.md#世界契约)；需要 ROS2 Action 映射 |
+| 不变量监测 | 进行中 | L0 | 每次查询时检查；违反或（默认情况下）未知时请求取消，即使技能报告成功也判失败 | `test_invariant_violation_cancels_real_http_execution_and_fails_step` |
+| 停滞检测 | 进行中 | L0 | 基于进度增量判定，独立于总超时 | `test_stall_detection_uses_progress_not_elapsed_time`；阈值需标定 |
+| 基于观测的独立验证 | 进行中 | L0 | 效果确认和子任务完成都要求有效的 observed 事实；动作技能自己上报的观测不算数 | 见 C 行；需要真实感知源 |
+| worker 和机器人心跳 | 未完成 | — | UI 显示 `unobserved` | 台账 U02；API 在线、worker 在线、机器人在线、机器人已停止四个指标分开 |
+
+### E. Loop 回环反馈
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 内环：重试和 fallback | 已完成 | L0 | 见 A2 | — |
+| 外环：失败后整计划重规划 | 已完成 | L0 | 有次数上限，继承提交时的会话快照、语义目标、绑定记忆和完成契约，并读取最新的失败账本 | [replanning-context-live.json](validation/replanning-context-live.json)、[completion-recovery-live.json](validation/completion-recovery-live.json)、[recovery-budget-live.json](validation/recovery-budget-live.json) |
+| 中环：局部修复 | 进行中 | L0 | `Runtime.repair`：保留同 ID、同定义、依赖都被保留且世界未否定其效果的已成功步骤；新步骤可以用带前置条件的不可逆技能；`repair` 模型方法；修复被拒时升级到外环 | `test_repair_keeps_verified_progress_and_restarts_only_the_failed_part`、`test_rejected_repair_escalates_to_the_outer_loop`；需要真实模型修复证据 |
+| 世界变化触发 | 进行中 | L0 | 不变量失效会取消执行，前置条件为 false 或效果被否定都会导致失败，然后进入反馈阶梯；地图换代会让空间事实失效 | 见 D 行；还没有“暂停受影响分支”这种更细的处理 |
+| 失败解释 | 已完成 | L0 | `task.explain` 和事件自动诊断给出带来源引用的解释，不改变任务状态 | [explanation-context-live.json](validation/explanation-context-live.json)、[event-automation-live.json](validation/event-automation-live.json) |
+| 补偿、人工接管与重试归属 | 未完成或进行中 | — | 见 A2 | 路线 P4 |
+
+### F. 世界状态维护
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| G1 状态源审阅 | 已完成 | 文档 | 已审阅相邻工程 G1 状态桥和运动桥的源码，并归档哈希。明确了接收时间和采样时间的区别、默认 covariance、坐标语义和停止证据缺口 | [G1 接入契约](G1_INTEGRATION_CONTRACT.md)、[world-source-discovery.json](validation/world-source-discovery.json) |
+| WorldState 数据模型 | 进行中 | L0 | `entity.attribute` 事实，带时间戳、坐标系、时钟域、置信度、来源、有效期、证据等级和地图版本；目前没有关系型事实（场景图） | `robot_agent/world_state.py` |
+| 观测有效性 | 进行中 | L0 | 按采样时间计算四种有效性；超前样本拒绝，乱序样本忽略 | `test_world_facts_carry_validity_and_keep_conflicting_sources` |
+| 更新机制 | 进行中 | L0 | 观测来自技能响应、状态桥 API/CLI 或操作者；效果只写 expected；冲突保留在事件中 | 需要接入真实或仿真状态流 |
+| WorldStateProvider（CTX-5） | 进行中 | L0 | 带有效性、坐标系、年龄和证据等级的快照；在 repair/subplanning 阶段为必选；L0 用自己的摘要视图（机器人状态、地点、已知物体） | `robot_agent/context_providers.py` |
+| 地图、TF 版本与失效传播 | 进行中 | L0 | `set_map_version` 使旧版本的空间事实失效；计划和记忆的失效传播尚未实现 | 台账 Q10/R08 |
+
+### G. 本体抽象与多本体适配
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| robot_id 与资源命名空间 | 已完成 | L0 | 见 A3 | — |
+| 本体无关的技能执行协议 | 已完成 | L0 | HTTP execute/query/cancel 协议不依赖具体本体 | [SKILL_PROTOCOL.md](SKILL_PROTOCOL.md) |
+| Embodiment Profile | 进行中 | L0 | `profiles/unitree_g1.json`、`profiles/wheeled_base.json`；安全限值未标定 | 需要 G1 实际资源和限值确认 |
+| 抽象技能与本体绑定 | 进行中 | L0 | `embodiment.install` 合成 SkillSpec；限值写入 schema；按轨道设置证据等级；换轨道时清理旧技能 | `test_profiles_bind_abstract_skills_with_limits_and_evidence_level` |
+| ROS2 Action 适配器 | 未完成 | — | — | 台账 Q02；把 execute/query/cancel/feedback 映射到 Action |
+| Unitree SDK 适配器 | 未完成 | — | 现有 cmd_vel 桥没有 execution ID、令牌或停止证据 | 见 G1 接入契约第三阶段 |
+| 仿真 provider | 未完成 | — | 架构已定义 `provider = isaaclab \| ros2 \| unitree_sdk` | 跟真机实现同一套 SkillSpec |
+| 第二本体验证 | 进行中 | L0（契约） | 轮式底盘 Profile 装载后只有自己的能力，含 manip 技能的计划被拒绝 | `test_second_body_gets_only_its_own_capabilities`；需要仿真跑通任务 |
+
+### H. 仿真轨
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 仿真器选型 | 未完成 | — | 架构文档写的是 Isaac Lab；MuJoCo 等更轻量的方案没有评估 | 按 G1 支持程度、SDK/DDS 接口一致性、传感器仿真、GPU 需求和许可选型，记录到 DECISIONS |
+| G1 仿真环境 | 未完成 | — | — | 能读状态、能执行站立、停止和移动，接口与实机桥一致 |
+| evidence_level 标记 | 进行中 | L0 | execution 和世界事实都带等级；UI 还没有区分显示 | 支线 S3 |
+| 仿真场景与任务集 | 未完成 | — | — | 至少覆盖导航、开抽屉放物、故障注入（断流、物体掉落、路径阻塞） |
+
+### I. 实机轨（G1）
+
+| 细项 | 状态 | 证据 | 当前情况 | 证据或完成条件 |
+|---|---|---|---|---|
+| 接入契约 | 已完成 | 文档 | 见主线 F | [G1 接入契约](G1_INTEGRATION_CONTRACT.md) |
+| 连接信息 | 未完成（阻塞） | — | 本机 ROS 图只有诊断话题；设备 ID、网卡/域、时间和坐标约定**还在等回复** | 契约"首次只读接入所需输入"中的 6 项 |
+| 只读状态采集 | 未完成 | — | — | 归档实际原始消息和来源信息，记录断流和恢复 |
+| 第一项运动技能 | 未完成 | — | — | 执行身份、令牌、查询、取消和独立停止观测都满足；不能把 SDK 返回 code=0 当成已静止 |
+| 硬件急停链路确认 | 未完成 | — | — | 见 A2 |
+| 真实传感器流 | 未完成 | — | — | 台账 Q09；RGB-D、点云、标定和频率 |
+
+---
+
+## 4. 支线细项
+
+### S1 上下文构造与会话
+
+上下文层在不替换 Runtime、Planner 和 Memory 的前提下，为每次模型调用生成一个可追溯、受预算约束的上下文视图：
 
 ```text
 ContextRequest
-    │
     ├── CapabilityProvider ── Skill Registry / Policy
     ├── SessionProvider ───── Session Store / Summary
     ├── TaskStateProvider ─── Runtime Ledger
     ├── MemoryProvider ────── Memory / Asset Catalog
-    ├── WorldStateProvider ── ROS2 / Isaac / Map / TF
+    ├── WorldStateProvider ── G1 / 仿真 / Map / TF   （未完成，并入主线 F）
     └── OperatorProvider ──── Approval / Override
-    │
     ▼
-ContextBuilder
-    │ validity → retrieval → reduction
-    ▼
-ContextAllocator
-    │ token budget / required / priority
-    ▼
-RoleAwareRenderer
-    │ system policy / conversation / untrusted data
-    ▼
-Planner / Replanner / Verifier
-    │
-    └── ContextManifest → Ledger
+ContextBuilder → ContextAllocator → RoleAwareRenderer → Planner / Replanner / Verifier
+    └── ContextBundle + ContextManifest → Ledger
 ```
 
-#### 工作包
+| ID | 工作包 | 状态 | 当前情况 | 退出条件 |
+|---|---|---|---|---|
+| CTX-0 | 契约和边界 | 进行中 | GoalContext、ContextRequest、Fragment、Bundle、Manifest、Provider Protocol v1 和规划快照 v1 已实现 | 补齐其他上下文类型的跨版本序列化 |
+| CTX-1 | 权限分层渲染 | 进行中 | 只有框架策略能进入 system 消息，普通上下文作为 user 数据 | 补齐真实工具消息配对和污染测试 |
+| CTX-2 | 能力和任务状态 Provider | 进行中 | 任务图关系和陈旧 revision 拒绝已实现 | 子规划的 ContextProfile 随主线 B 完成 |
+| CTX-3 | Session 历史和摘要 | 进行中 | 持久会话、显式和自动摘要、分块、并发保护、恢复预算都有真实验收 | 更多长程任务族验证 |
+| CTX-4 | Memory 检索 | 进行中 | 按 robot ID、有效期和证据过滤的 FTS 检索，版本绑定，工作台选择 | 检索质量基准；有真实召回问题后再考虑向量检索 |
+| CTX-5 | World State Provider | 进行中（L0） | **并入主线 F** | 见主线 F |
+| CTX-6 | 调用点统一接入 | 进行中 | 规划、重规划、解释、诊断和摘要已接入；旧 CLI 的任意 dict 上下文路径还在 | 移除旧路径 |
+| CTX-7 | 可观测与重放 | 进行中 | 完整上下文包、哈希、Manifest 和精确输入重建已实现；观察 API 和 UI 支持单条查看和两条对比 | 消融评测 |
 
-| ID | 工作包 | 状态 | 具体实现 | 交付物与退出条件 | 依赖 |
-|---|---|---|---|---|---|
-| CTX-0 | 契约和边界冻结 | 进行中 | 已实现 `GoalContext`、`ContextRequest`、扩展 `ContextFragment`、`ContextBundle`、`ContextManifest`、任务节点/关系契约，并增加经严格字段校验的初步 Goal 分析结果入口；Provider Protocol v1 已实现并接入现有来源；规划快照 v1 及既有 v0 只读兼容已接通，其他 Context 类型的跨版本序列化仍待补充。 | 已有契约和模型边界测试；Provider 已接入；完成序列化兼容后退出。 | `context_models.py`、`goal_analysis.py`、上下文测试 |
-| CTX-1 | 权限分层与消息渲染 | 进行中 | `RoleAwareRenderer` 已接入 `ModelCaller`；只有 framework policy 可渲染为 system，普通 Context 作为 user 数据，Session 仅接受 user/assistant。真实 tool-call 配对和更完整污染测试仍待补充。 | 已验证不可信 world data 不会成为 system；补齐真实工具消息与模型请求快照测试后退出。 | `context_render.py`、`model_call.py` |
-| CTX-2 | 能力和任务状态 Provider | 进行中 | `ContextBuilder` 已生成紧凑能力视图和 `TaskStateContext`；任务以 `decomposes_to`、`depends_on`、`verifies` 图关系表达，成功结果和证据进入节点；初始规划与重规划已经接入。独立 Provider Protocol 已实现；子规划颗粒度、阻塞/fallback 边尚未完成。 | 已有任务图与陈旧 revision/generation 拒绝逻辑；补齐子规划 ContextProfile 和恢复一致性测试后退出。 | `context_builder.py`、Planner、Runtime |
-| CTX-3 | Session 历史和摘要 | 进行中 | 已实现持久 Session、提交时上下文快照、显式历史摘要与近期/固定原文保留；原文预算分块与并发保护已完成真实验证；共享会话动作的自动预算触发已实现并真实验证；工作台控件已实现并验证；自动恢复的快照预算缩减已实现并经真实模型与文件执行验收；更多长程任务族仍待验证。摘要保存覆盖范围、源消息 ID、生成模型及版本；新消息到来后不得静默覆盖原始记录。 | 多轮任务能恢复会话；近期消息原文保留；超预算时先压缩旧历史；摘要可追溯并可重新生成。 | CTX-0、CTX-1 |
-| CTX-4 | Memory 检索 Provider | 进行中 | 已实现按 robot ID、有效期与证据过滤的 FTS 检索、版本绑定和工作台选择；自动查询策略与检索质量基准待完善。第一版采用现有结构化过滤与 FTS；有真实召回问题和基准后再增加向量检索及混合排序。 | 过期、错误 robot、证据损坏的记忆不进入上下文；Manifest 记录候选、入选、分数和丢弃原因；建立检索测试集。 | CTX-0、CTX-2；复用现有 Memory |
-| CTX-5 | World State Provider | 未完成 | 定义不可变 `WorldStateSnapshot`；从 实际 ROS2/设备、机器人状态、地图和 TF 适配器读取位姿、电量、对象、障碍物及地图版本。进入 Bundle 前检查时间、clock domain、frame、map version、置信度和 evidence。 | 用固定录制数据验证正常、过期、坐标系不一致、地图切换和缺证据路径；实时事实不由长期 Memory 代替。 | CTX-0、真实数据接口、地图/TF 规则 |
-| CTX-6 | Builder、预算和调用点接入 | 进行中 | Builder、渲染后预算和稳定排序已接入 Planner 与自动 Replanner；Session/Memory 及恢复预算已接通；旧 CLI context 仍保留兼容路径，World State、模型型 Verifier 和全调用点契约尚未统一。 | 当前核心调用测试通过；移除旧任意 dict 路径并完成各类预算和子规划接入后退出。 | CTX-1 至 CTX-5 |
-| CTX-7 | 可观测、重放和质量评估 | 进行中 | 模型发送前已保存基础 `ContextManifest`，包含 request、phase、纳入/丢弃项、预算、估算器和 renderer 版本；Provider 接口版本已记录；完整 Bundle 与快照哈希已保存，规划实际输入重建已验证；统一追溯 UI、各调用点覆盖和消融评测仍待完善。 | 已验证传输失败前 Manifest 仍存在；完成重放和解释接口后退出。 | CTX-2 至 CTX-6 |
+预算降级顺序（默认）：
+1. 安全策略、权限和当前目标（必选）
+2. 当前计划和步骤、能力契约
+3. 人工覆盖和近期会话
+4. 最新且一致的世界状态
+5. 检索到的记忆
+6. 较旧的会话（先摘要）
+7. 调试材料
 
-#### 第一版契约目标
+**本支线暂停继续打磨追溯能力**，后续只在服务主线 B、E、F 时推进。
 
-建议代码边界如下，实际实现前仍需用最小接口测试确认不会与现有平铺模块产生循环依赖：
+### S2 应用层与工作台
 
-```text
-robot_agent/context/
-├── models.py
-├── builder.py
-├── allocator.py
-├── renderer.py
-├── manifest.py
-├── providers/
-│   ├── capability.py
-│   ├── task_state.py
-│   ├── session.py
-│   ├── memory.py
-│   ├── world_state.py
-│   └── operator.py
-├── reducers/
-│   ├── history.py
-│   ├── memory.py
-│   └── world_state.py
-└── validators/
-    ├── authority.py
-    ├── freshness.py
-    └── spatial.py
-```
-
-`ContextFragment` 的目标字段至少包括：`id`、`kind`、`content`、`source`、`priority`、`required`、`authority`、`observed_at_ns`、`expires_at_ns`、`robot_id`、`frame_id`、`map_version`、`confidence` 和 `evidence_ids`。字段是否适用于某种 `kind` 由契约校验，不要求每段上下文伪造空间属性。
-
-#### 预算和降级顺序
-
-| 顺序 | 上下文类别 | 默认处理 |
+| 里程碑 | 状态 | 当前情况 |
 |---|---|---|
-| 1 | 安全策略、权限、当前 Goal | 必选；超限时拒绝模型调用，不截断语义 |
-| 2 | 当前 Plan/Step、成功依赖结果、能力契约 | 必选或高优先级；使用结构化紧凑表示 |
-| 3 | 人工覆盖和近期 Session | 高优先级；保留近期原文 |
-| 4 | 最新且一致的 World State | 按任务选择；先减少对象数量，不混用过期快照 |
-| 5 | 检索 Memory | Top-K；优先证据完整、有效、robot/map 匹配的条目 |
-| 6 | 较旧 Session | 先摘要，再按覆盖范围删除原文视图；底层原始消息不删除 |
-| 7 | 调试和解释性材料 | 可选；预算不足时最先丢弃 |
+| M1 统一动作与幂等命令 | 已完成（L0） | 共享动作入口、可信主体、机器人范围检查、幂等队列、原子回执，HTTP 和 CLI 都可用 |
+| M2 会话与选择上下文 | 已完成（L0） | 持久会话、界面选择快照、记忆和资产绑定、来源清单 |
+| M3 草稿、控制与解释 | 已完成（L0） | 草稿版本和哈希绑定、执行控制、失败节点解释 |
+| M4 设备接入 | **并入主线 H、I** | 原文"禁止仿真"已改为仿真与实机并行 |
 
-#### 分阶段验收顺序
+详细说明见 [APPLICATION_LAYER.md](APPLICATION_LAYER.md) 和 [APPLICATION_LAYER_PLAN.md](APPLICATION_LAYER_PLAN.md)。
 
-1. `CTX-0 + CTX-1`：先建立类型、权限边界和安全渲染，避免后续 Provider 把不可信数据放入 system。
-2. `CTX-2 + CTX-3`：完成 Session 与 Task State 的最小多轮规划/重规划闭环，这是第一项可交付纵向切片。
-3. `CTX-4`：接入现有 Memory，先以 FTS 和结构化过滤建立真实基线，不预设必须引入向量库。
-4. `CTX-5`：接入带时间与空间一致性检查的世界状态；没有真实接口时只完成契约与录制数据测试，不声称现场完成。
-5. `CTX-6 + CTX-7`：统一调用入口、保存 Manifest，并完成重放、超预算、污染上下文和消融评测。
+### S3 观察 UI
 
-第一版软件闭环的完成条件是：同一 Session 中的初始规划和失败后重规划能够读取受控的近期历史、任务事实及相关 Memory；各 Fragment 有来源、权限和预算记录；过期或不一致数据被拒绝；进程恢复后可以重建上下文。机器人世界状态只有在真实 实际 ROS2/设备 数据、时间/坐标系检查和证据链共同通过后才标记完成。
-
-## 8. 多模态数据、地图与记忆
-
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 资产分类契约 | 已完成 | 支持 RGB、深度、点云、点云地图、占据地图、体素地图、标定、TF、文档和录制。 | `robot_agent/memory.py` |
-| 实际文件摄取与完整性 | 已完成 | 读取实际字节，保存哈希、大小、格式和来源；读取时复核哈希。 | 资产完整性测试 |
-| 时空和地图元数据校验 | 已完成 | 空间资产要求 robot/frame/clock/timestamp，图像引用标定，地图携带版本。 | `test_missing_spatial_metadata_is_rejected` 等 |
-| 资产父子关系 | 已完成 | 派生资产引用存在且完整的父资产，不接受悬空标定。 | Memory 查询测试 |
-| MCAP 记录 | 已完成 | 保存实际消息字节、schema、channel、采集/接收时间并可重读。 | `tests/test_recording.py` |
-| rosbag2 录制适配 | 已完成 | 使用实际安装的 sqlite3 插件录制并重开统计；缺失 topic/插件/零消息明确失败。 | [ROS 记录证据](validation/ros-recording.json) |
-| 基础记忆目录与检索 | 已完成 | 语义条目引用有效资产，支持结构化条件和文本查询。 | `Memory.remember/search/query_assets` |
-| 真实 RGB/深度/点云/地图流 | 未完成 | 当前机器只验证 ROS2 诊断消息，没有机器人传感器 topic 和高频数据证据。 | 台账 Q09；需实际 topic、标定、频率和样本 |
-| 地图对齐与版本失效传播 | 未完成 | 已保存 frame/version/父关系，但没有重定位、回环后的计划和记忆失效机制。 | 台账 Q10/R08；需实际 TF/地图版本链 |
-| 自动分类、矛盾和实体合并 | 未完成 | 没有分类器、冲突消解、实体合并或遗忘策略。 | 台账 Q11；必须保留来源并用真实数据验证 |
-| 向量检索和场景图 | 未完成 | 未集成向量库、Hydra/Spark-DSG 或 ConceptGraphs。 | 台账 R09；先用实际检索问题证明需求 |
-| 数据保留、配额与背压 | 未完成 | 没有保留周期、磁盘配额、磁盘满策略、流量背压和丢帧记录。 | 台账 Q12/R07；需数据预算和负载测试 |
-
-## 9. 解耦 UI 与观察 API
-
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| 独立只读观察 API | 已完成 | 原观察服务只用 SQLite `mode=ro/query_only`，GET-only，不导入 Runtime/DBOS；测试网关单独启动。 | `robot_agent_observer/server.py`、`tests/test_observer.py` |
-| UI 真实问答测试 | 已完成 | 自由输入问题、可选预期答案、实际回答/耗时/模型/响应 ID、持久历史；复用 `ModelCaller.qa`，服务端环境读取密钥。真实浏览器提问返回 `645`，耗时 2505 ms。 | [启动与验收](MODEL_TEST_UI.md)、`ui/scripts/test-model-ui.mjs` |
-| 任务流程可视化 | 已完成 | 展示任务 DAG、节点状态、实际尝试、fallback、停止证据、计划历史和事件。 | `ui/src/TaskView.tsx`、Chromium 验证 |
-| 资源/资产/记忆/模型页面 | 已完成 | 全部读取实际账本；无记录时显示空状态，不生成示例结果。 | `ui/src/App.tsx`、[UI 验证](UI_VALIDATION.md) |
-| 断连和数据过期提示 | 已完成 | 断开 API 后保留上次快照并明确标记过期；API 在线不推断 worker/机器人在线。 | Playwright 断网测试 |
-| 响应脱敏和浏览器整数保真 | 已完成 | 过滤已知配置敏感字段，纳秒等大整数用十进制字符串返回。 | `robot_agent_observer/ledger.py`、observer 测试 |
-| 任务控制与编辑 | 进行中 | 已有共享 command API、权限、幂等控制、计划草稿及实际状态展示；真机停止交互尚需现场验收。 | 台账 U01；应用层及浏览器实际验证 |
-| worker/机器人健康状态 | 未完成 | 当前显示 `unobserved`，没有心跳来源和失联判定。 | 台账 U02 |
-| RGB/深度/点云/地图预览 | 未完成 | 当前只展示元数据和证据关系，没有解码、3D 或视频播放。 | 台账 U03 |
-| 大规模详情查询 | 进行中 | 列表和事件已有分页；任务执行/历史详情、索引和推送尚未完善。 | 台账 U04 |
-| 跨机器认证与访问 | 未完成 | 服务只绑定 loopback，没有认证代理或模型原文访问策略。 | 台账 U06 |
-
-## 10. 测试、验证与工程质量
-
-| 细项 | 状态 | 当前情况 | 证据或完成条件 |
-|---|---|---|---|
-| Python 软件验证 | 已完成 | 已有分模块实际文件、账本、HTTP、进程与真实模型验证记录；各记录仅覆盖对应版本和范围，不代表当前全量测试结果。 | [验证记录](VALIDATION.md)、[上下文包](validation/context-codec-live.json)、[事件分页](validation/event-pages-live.json) |
-| 浏览器验证与构建 | 已完成 | 观察页面及应用工作台的会话、记忆、摘要、自动诊断、事件分页已有实际浏览器证据；以各次报告限定覆盖范围。 | [UI 验证](UI_VALIDATION.md)、[事件工作台](validation/event-browser-live.json) |
-| 实际文件与 HTTP 验证 | 已完成 | 文件摄取、哈希、fallback、分块复制取消及真实部分文件均有记录。 | 第一版及 UI 验证文档 |
-| ROS2 软件接入验证 | 已完成 | topic 发现和诊断日志录制通过；只证明软件通路。 | [VALIDATION.md](VALIDATION.md) |
-| 实际模型端到端验收 | 进行中 | 文件任务已通过真实模型、worker 执行及最终字节核验；更多任务族与机器人现场仍待验证。 | [多文件任务](validation/multifile-live.json)、[恢复预算](validation/recovery-budget-live.json) |
-| 实际机器人技能验收 | 未完成 | 无底盘/机械臂等真实执行和停止证据。 | 至少一项真实机器人任务全链路记录 |
-| 实际多模态现场验收 | 未完成 | 无 RGB-D、点云和地图的持续真实流验证。 | 实际传感器数据、标定、吞吐、丢帧和存储记录 |
-| CI 自动化 | 未完成 | 当前仓库没有本框架的独立 CI 结果作为证据。 | 配置可重复安装、Python/UI 检查和报告归档 |
-
-## 当前构建阶段
-
-详细依赖、交付物和退出条件见 [BUILD_ROADMAP.md](BUILD_ROADMAP.md)。
-
-| 阶段 | 状态 | 当前目标 |
+| 细项 | 状态 | 当前情况 |
 |---|---|---|
-| 0. 可运行骨架与事实边界 | 已完成 | 第一版核心、只读 UI、调研和既有软件验证。 |
-| 1. 执行权威与恢复闭环 | 进行中 | HTTP 文件服务 fencing/reconciliation 已验证；继续补偿/人工接管及设备端验收。 |
-| 2. 真实机器人技能纵向切片 | 未完成 | 接入至少一项实际技能，验证执行/查询/取消/停止及最终条件。 |
-| 3. 真实模型长程规划 | 进行中 | 文件任务及有界恢复闭环已验证，扩展任务族和机器人规划质量。 |
-| 4. 多模态数据与长期记忆 | 未完成 | 接入真实传感器，完善背压、地图失效和语义策略。 |
-| 5. 操作控制与可视化扩展 | 进行中 | 共享 command API、工作台和分页事件已有验证；心跳、实际传感器预览与远程部署仍缺。 |
-| 6. 生产部署与多机器人 | 未完成 | 验证生产持久化、高可用和多机器人协调。 |
-| 7. 陌生环境长程场景验收 | 未完成 | 用自主探索与目标趋向导航检验整个框架。 |
+| 只读观察 API | 已完成 | 使用 SQLite 只读模式，只有 GET，不导入 Runtime |
+| 任务 DAG 与执行过程可视化 | 已完成 | DAG、尝试、fallback、停止证据、计划历史、事件 |
+| 资源、资产、记忆和模型页面 | 已完成 | 只读取实际账本，没有记录时显示空状态 |
+| 真实问答测试 | 已完成 | [MODEL_TEST_UI.md](MODEL_TEST_UI.md) |
+| 上下文单条查看和两条对比 | 已完成 | [context-browser-live.json](validation/context-browser-live.json)、[context-diff-browser-live.json](validation/context-diff-browser-live.json) |
+| 断连与过期提示、脱敏 | 已完成 | 断连保留上次快照并标记过期；纳秒等大整数用字符串返回 |
+| 任务控制与编辑 | 进行中 | 工作台控制已实现；现场停止交互待实机验收 |
+| 事件分页 | 进行中 | 工作台事件已改为分页；任务执行详情尚未分页，也没有推送 |
+| worker 和机器人心跳 | 未完成 | 并入主线 D |
+| 世界状态、传感器和 3D 预览 | 未完成 | 台账 U03；先用仿真数据开发，标明证据等级 |
+| 证据等级显示 | 未完成 | 区分 L0、L1、L2 |
+| 跨机器认证 | 未完成 | 台账 U06 |
 
-## 维护规则
+### S4 多模态数据与记忆
 
-1. 每次实现或验收后更新本文件的日期、对应细项和当前工作队列；不要只更新总体结论。
-2. “已完成”必须给出代码或实际验证证据；只有接口、schema 或研究材料时不能把完整能力标为完成。
-3. 已实现但缺真实场景验收的条目保持“进行中”，并写清已完成的软件范围。
-4. 新问题先写入 [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)，再在此处增加对应状态；关闭问题时保留关闭证据。
-5. 同步更新 Momo 正式快照、`WORKLOG.md`、`UNKNOWNS.md` 和 `HANDOFF.md`，并检查来源指纹和关系健康。
-6. 历史测试报告不因状态更新而改写。当前离线回归 41 tests / 9 subtests 通过、live model 1 项默认跳过；显式启用的 `qwen3.8-max` 真实问答 1 项通过。既有 4 项浏览器回归和生产构建结果保留；项目环境没有 `.venv/bin/ruff`。没有新增机器人验收。
+| 细项 | 状态 | 当前情况 |
+|---|---|---|
+| 资产分类、摄取、哈希与时空元数据 | 已完成 | RGB、深度、点云、各类地图、标定、TF、文档、录制 |
+| 资产父子关系 | 已完成 | 派生资产必须引用存在且完整的父资产 |
+| MCAP 与 rosbag2 录制 | 已完成 | [ros-recording.json](validation/ros-recording.json)；本机只装了 sqlite3 存储插件 |
+| 基础记忆目录与全文检索 | 已完成 | `Memory.remember/search` |
+| 资产版本绑定 | 已完成 | [asset-binding-live.json](validation/asset-binding-live.json) |
+| 仿真和真实传感器流 | 未完成 | 先接仿真流，验证吞吐、背压和丢帧；再接实机 |
+| 自动分类、矛盾处理与实体合并 | 未完成 | 台账 Q11 |
+| 向量检索与场景图 | 未完成 | 台账 R09；先用真实检索问题证明有需要 |
+| 数据保留、配额与背压 | 未完成 | 台账 Q12/R07 |
+| DimOS memory 复用 | 未完成 | 台账 R03 |
 
-工作台记忆选择证据：[memory-browser-live.json](validation/memory-browser-live.json)。不自动调用模型；显示来源完整性与文字内容的区别。实际模型计划使用选中记录中的文件路径，worker 最终哈希验证通过。
+### S5 事件自动诊断
 
-分块摘要增量证据：[chunked-session-summary-live.json](validation/chunked-session-summary-live.json)。普通/大历史2项真实模型到实际文件执行通过；首块调用期间实际修改会话的用例通过，后续块未发送、不完整摘要未绑定。
+| 细项 | 状态 | 当前情况 |
+|---|---|---|
+| 失败事件入队与诊断 | 已完成 | [event-automation-live.json](validation/event-automation-live.json) |
+| 中断恢复与显式重新诊断 | 已完成 | [automation-interruption-live.json](validation/automation-interruption-live.json) |
+| 诊断上下文包 | 已完成 | [automation-context-live.json](validation/automation-context-live.json) |
+| 工作台 | 已完成 | [automation-browser-live.json](validation/automation-browser-live.json) |
+| 定时或条件触发 | 未完成 | — |
+| 诊断结果驱动恢复 | 未完成 | 可以作为主线 E 中环的输入，但必须经过 Runtime 的权限和契约检查 |
 
-自动预算证据：[automatic-session-budget-live.json](validation/automatic-session-budget-live.json)。目标分析与规划两个入口的实际模型/文件执行路径通过，默认拒绝、固定内容超限不发送、正常预算不重复摘要及会话版本检查均有验证。
+### S6 生产部署与多机器人
 
-工作台历史摘要与预算证据：[summary-browser-live.json](validation/summary-browser-live.json)。真实浏览器完整链路已通过，并验证持久策略、原文来源及损坏提示；不代表机器人执行完成。
+| 细项 | 状态 | 当前情况 |
+|---|---|---|
+| Postgres 生产部署 | 未完成 | 台账 Q13/R01 |
+| 多进程和跨机器高可用 | 未完成 | — |
+| 性能与容量基准 | 未完成 | — |
+| 多机器人协调 | 未完成 | 先完成单本体闭环和多本体适配 |
+| 跨主机租约与仲裁 | 未完成 | 当前令牌只在单个账本内单调 |
 
+### S7 工程基线与治理
 
-恢复预算实现增量：新增 recovery_budget.py，在提交时不可变会话快照上执行预算预检和分块摘要，保持固定原文、最新任务账本及绑定记忆；派生快照记录父快照哈希，不修改当前会话或原始提交快照。每次摘要调用前后及规划返回后校验任务版本、原快照和控制请求。策略关闭或必需上下文无法容纳时拒绝调用；同一覆盖范围的既有摘要仍不适配时明确拒绝，不递归压缩。普通及预算受限恢复已完成真实模型、实际文件故障和 worker 哈希验证；实际摘要期间取消已通过真实模型并发验收：保留响应，不创建派生快照或修订计划，worker 最终取消任务。证据见 [恢复预算验证](validation/recovery-budget-live.json)。完整长程任务族、世界状态与真机验收仍未完成。
+| 细项 | 状态 | 当前情况 | 完成条件 |
+|---|---|---|---|
+| 开发环境 | 进行中 | 文件锁已抽象为 `robot_agent/filelock.py`（POSIX 用 fcntl，Windows 用 msvcrt），资产目录 fsync 也已兼容 Windows；离线回归可在 Windows/Python 3.13 运行。`ros_recording.py` 仍依赖 POSIX；Windows 上测试临时目录路径需较短（MAX_PATH） | 仍需选定标准环境（Linux/WSL2 + ROS2 Humble）用于 ROS2 和仿真 |
+| 仓库卫生 | 未完成 | 没有 `.gitignore`；`ui/node_modules`（7295 个文件）、`.runtime` 账本、`__pycache__`、`egg-info`、`ui/dist` 和大型媒体文件都进了版本库 | 添加 `.gitignore`，把产物移出版本库；验证证据保留在 `docs/validation` |
+| 统一回归基线 | 未完成 | 各文档记录的是不同时间、不同范围的局部结果（30、32、38、41 项） | 在标准环境里跑一次全量离线回归，记录为新基线 |
+| CI | 未完成 | 没有 | 离线 Python 回归加 UI 构建；真实模型和仿真测试单独触发 |
+| 文档一致性 | 进行中 | 本次已重写状态和路线文档。README 中"此版只读"、PRODUCT.md 中的模型名等仍是旧描述 | 按新方向同步更新 README 和 PRODUCT |
+| Momo 同步 | 进行中 | 图到 revision 156；多项增量和本次方向决策尚未同步 | 新增本体、仿真和世界状态等主线对象 |
 
+### S8 开源调研与许可
 
-Provider 拆分增量：目标/能力、任务账本、会话、记忆、资产、界面选择已迁移至统一 ContextProvider 接口；Manifest 保存 Provider 名称和接口版本。新增实际文件执行/选择/证据损坏与跨 robot 拒绝测试。世界状态来源仍缺失，当前 ROS2 发现只含诊断主题，不将普通资产当作实时观测。接口说明见 [CONTEXT_PROVIDERS.md](CONTEXT_PROVIDERS.md)。
+| 细项 | 状态 | 当前情况 |
+|---|---|---|
+| 第一轮开源调研 | 已完成 | 41 个仓库，110 份固定提交材料，见 [research/REPORT.md](research/REPORT.md) |
+| 第一版组件选择 | 已完成 | DBOS、py_trees、MCAP、jsonschema、httpx；React、React Flow、Vite |
+| 仿真器与本体适配调研 | 未完成 | 需要评估 G1 可用的仿真方案、ROS2 Action 规范，以及多本体抽象的参考实现 |
+| 分发许可审查 | 进行中 | 台账 R10 |
 
-Provider 接口验收：31 项实际文件/账本回归及 9 个子测试通过；2 项环境真实模型闭环通过（记忆驱动规划、超预算快照恢复），均由 worker 完成文件哈希验证。实际 Manifest 已逐项核对 Provider 名称及接口版本。证据：[context-providers-live.json](validation/context-providers-live.json)。
+---
 
+## 5. 当前已知问题
 
-快照版本增量：统一读取器接入 Builder、草稿提交、worker 应用和恢复；新记录写入 v1，检查原文/目标哈希、整体绑定及派生谱系。4 份真实旧记录只读兼容验证通过。尚未完成整个上下文序列化体系及世界状态/真机验收。
+| 编号 | 问题 | 影响 | 去向 |
+|---|---|---|---|
+| K1 | ~~一次性扁平 DAG 加整计划替换式重规划~~ 2026-10-07 已有 L0 实现：层级任务树、按需展开、`Runtime.repair` 局部修复；2026-10-12 任务层改为 L0 TaskPlan | 尚缺真实模型和仿真证据 | 主线 B、E；路线 P4、P5 |
+| K2 | ~~技能契约里没有前置条件和效果~~ 2026-10-07 已有 L0 实现 | 阈值和容差未标定 | 主线 C、F；路线 P3 |
+| K3 | 世界状态模型已有（L0），但**没有真实或仿真观测流** | 监测和反馈只能用操作者观测验证 | 主线 F、H；路线 P2、P3 |
+| K4 | 本体抽象已有（L0），但**没有仿真或实机适配器** | 抽象技能无法实际执行 | 主线 G、H；路线 P2 |
+| K5 | 实机连接信息还没到 | 实机轨阻塞 | 主线 I；仿真轨照常推进 |
+| K6 | 开发环境：离线回归已能在 Windows 上运行（2026-10-07）；ROS2 和仿真仍需 Linux/WSL2 | ROS2 录制和仿真无法在本机运行 | S7；路线 P1 |
+| K9 | 13 项历史离线测试过期：`test_semantic_context_pipeline.py` 的脚本化 caller 缺少 `prepare`；`test_context_framework.py` 构造的任务缺少 `catalog` | 回归基线不干净，需要修测试或删除 | S7；路线 P1 |
+| K7 | 仓库卫生与缺少 CI | 版本库体积大，无法追溯历史，没有可重复的回归 | S7；路线 P1 |
+| K8 | 过去一段时间集中在上下文追溯支线 | 主线推进停滞 | 本次重排后支线降级 |
 
-快照实际验收：[context-snapshot-live.json](validation/context-snapshot-live.json)。环境真实模型的摘要恢复与快照变更拒绝两条链路通过；已接受的原计划实际执行并验证文件哈希，损坏快照命令未创建任务。38 项回归与 9 个子测试通过。
+## 6. 当前工作队列
 
+按 [BUILD_ROADMAP.md](BUILD_ROADMAP.md) 的顺序：
 
-事件自动化增量：新增 automation.create/set-enabled/list/runs 共享动作和独立 automation-worker；实际失败事件按创建者与机器人范围持久入队，游标/预算/去重原子提交。实际模型解释引用精确错误和事件，未改变失败任务状态；queued 跨进程恢复、两个并发 worker 仅一次调用、暂停/范围/事件完整性检查通过。调用中 SIGKILL/SIGINT 与显式重新诊断已有增量验收；工作台操作已有下述真实浏览器验收；其他中断窗口、定时条件和自动恢复执行仍未验收。使用见 [EVENT_AUTOMATIONS.md](EVENT_AUTOMATIONS.md)，证据见 [event-automation-live.json](validation/event-automation-live.json)。
+2026-10-07 起，Agent 层（P2–P5 的软件部分）已有 L0 实现，见 [AGENT_LOOP.md](AGENT_LOOP.md)。剩余工作集中在"让它真正跑在仿真上"：
 
+1. **P2 仿真基座（最高优先）：** 仿真器选型；实现 G1 仿真适配器，满足 [SKILL_PROTOCOL.md](SKILL_PROTOCOL.md#世界契约)，包括 feedback 和 observations；把仿真状态流接入 WorldState。
+2. **真实模型验收：** 运行 `tests/test_l0_live.py`（L0 `task_planning`/`task_acceptance`），并对 `repair` 方法做 live 测试，留存证据文件。
+3. **P1 工程基线：** `.gitignore`、修复或删除 K9 中的过期测试、CI。
+4. **实机轨 R1 并行：** 拿到 G1 连接信息，做只读状态采集，写入 WorldState（`evidence_level=hardware_observation`）。
+5. P4 剩余：补偿技能与人工接管协议、心跳、阈值标定。
 
-进程中断增量：实际 SIGKILL 和 SIGINT 后原请求均保持 unresolved，重启不重发；后续真实失败事件和 automation.retry 的实际模型响应已验证。重新诊断保留 retry_of、创建者及原不确定记录，受同一预算和幂等键约束。响应与诊断终态现以同一事务提交。证据：[automation-interruption-live.json](validation/automation-interruption-live.json)。供应商是否接收被中断请求仍未知，不能把缺失响应解释为未调用或已成功。
+## 7. 增量记录（2026-09）
 
+以下增量都是 L0 证据，没有仿真或实机验收。完整说明见对应证据文件和 [APPLICATION_LAYER_PLAN.md](APPLICATION_LAYER_PLAN.md)。
 
-自动诊断工作台增量：创建、暂停/启用、诊断详情和显式重新诊断已接通；真实浏览器经共享动作创建规则，实际文件失败入队、来源损坏拒绝后重新诊断获得真实模型响应，刷新/轮询无额外模型调用。实际断开应用服务后保留上次诊断。证据：[automation-browser-live.json](validation/automation-browser-live.json)。世界状态和真机验收仍未完成。
+| 增量 | 范围要点 | 证据 |
+|---|---|---|
+| 第一版模型规划 | qwen3.8-max 返回合法两步 DAG，没有执行 | [model-planning-qwen3.8-max.json](validation/model-planning-qwen3.8-max.json) |
+| ROS2 录制 | 发现 topic，录制诊断消息；只证明软件通路 | [ros-recording.json](validation/ros-recording.json) |
+| 应用层 | 统一动作、幂等命令、会话、草稿、解释 | [application-layer-2026-09-22.json](validation/application-layer-2026-09-22.json) |
+| 记忆上下文 | 按机器人范围检索、版本绑定、来源复核；模型从记忆读取路径后规划，并实际执行 | [memory-context-live.json](validation/memory-context-live.json) |
+| 工作台记忆选择 | 浏览器→模型→worker 闭环 | [memory-browser-live.json](validation/memory-browser-live.json) |
+| 自动重规划上下文 | 实际文件故障→模型给出备用路径→哈希核验 | [replanning-context-live.json](validation/replanning-context-live.json) |
+| 历史摘要 | 显式摘要，保留近期原文，记录来源哈希 | [session-summary-live.json](validation/session-summary-live.json) |
+| 分块摘要 | 超大历史分块，并发编辑时拒绝绑定不完整摘要 | [chunked-session-summary-live.json](validation/chunked-session-summary-live.json) |
+| 自动预算 | 目标分析和规划超预算时自动整理 | [automatic-session-budget-live.json](validation/automatic-session-budget-live.json) |
+| 工作台摘要 | 策略、固定原文、手动生成 | [summary-browser-live.json](validation/summary-browser-live.json) |
+| 恢复预算 | 在不可变快照上做预算和分块摘要；摘要期间取消不会创建修订 | [recovery-budget-live.json](validation/recovery-budget-live.json) |
+| Provider 拆分 | 统一 ContextProvider 接口，Manifest 记录 Provider 版本 | [context-providers-live.json](validation/context-providers-live.json) |
+| 快照版本 | v1 快照、旧 v0 只读兼容、篡改后拒绝 | [context-snapshot-live.json](validation/context-snapshot-live.json)、[context-snapshot-legacy.json](validation/context-snapshot-legacy.json) |
+| 上下文隔离 | Provider 输入隔离，诊断清单 | [context-isolation-live.json](validation/context-isolation-live.json) |
+| 完整上下文包 | ContextBundle v1，可以精确重建实际请求 | [context-codec-live.json](validation/context-codec-live.json) |
+| 多文件任务 | 七节点计划、`asset.verify-set` | [multifile-live.json](validation/multifile-live.json) |
+| HTTP fencing | 控制域单调令牌、旧令牌拒绝、重启后持久化 | [fencing-live.json](validation/fencing-live.json) |
+| 旧执行停止核对 | 接管后通过实际 cancel 停止旧执行，保留部分字节，没有成功冒报 | [fencing-reconciliation-live.json](validation/fencing-reconciliation-live.json) |
+| 事件分页 | 绑定任务的游标，1–500 条一页 | [event-pages-live.json](validation/event-pages-live.json) |
+| 工作台事件 | 分页加载、增量轮询、断连保留 | [event-browser-live.json](validation/event-browser-live.json) |
+| 事件自动化 | 失败事件入队诊断，两个 worker 并发也只调用一次 | [event-automation-live.json](validation/event-automation-live.json) |
+| 进程中断 | SIGKILL/SIGINT 后保持 unresolved，不自动重发 | [automation-interruption-live.json](validation/automation-interruption-live.json) |
+| 自动诊断工作台 | 创建、暂停、重新诊断 | [automation-browser-live.json](validation/automation-browser-live.json) |
+| 失败解释追溯 | 发送请求前原子保存完整上下文包 | [explanation-context-live.json](validation/explanation-context-live.json) |
+| 目标分析追溯 | 分析和澄清保存完整上下文包；修复了 JSON 键顺序问题 | [goal-context-live.json](validation/goal-context-live.json) |
+| 诊断上下文包 | 自动诊断保存完整上下文包 | [automation-context-live.json](validation/automation-context-live.json) |
+| 摘要追溯 | 分块和恢复摘要保存完整上下文包 | [summary-context-live.json](validation/summary-context-live.json) |
+| 上下文只读查询 | `GET /api/v1/models/{id}/context` | [context-observer-live.json](validation/context-observer-live.json) |
+| 上下文面板与差异 | 单条面板、两条差异 API 与界面 | [context-browser-live.json](validation/context-browser-live.json)、[context-diff-live.json](validation/context-diff-live.json)、[context-diff-browser-live.json](validation/context-diff-browser-live.json) |
+| 资产版本绑定 | AssetBinding v1，在提交、派发和恢复时复核 | [asset-binding-live.json](validation/asset-binding-live.json) |
+| 显式完成契约 | 区分技能报告的状态和任务验收结果 | [completion-contract-live.json](validation/completion-contract-live.json) |
+| 完成契约恢复 | 验收失败后模型改用授权的备用文件 | [completion-recovery-live.json](validation/completion-recovery-live.json) |
+| 动作发现契约 | 目录版本、副作用声明 | [APPLICATION_LAYER.md](APPLICATION_LAYER.md) |
+| 跨动作幂等修复 | 统一键归属，冲突返回 409 | [action-idempotency-live.json](validation/action-idempotency-live.json) |
+| 世界状态接入复核 | G1 桥源码审阅，实际 ROS 图发现 | [world-source-discovery.json](validation/world-source-discovery.json) |
+| Agent 闭环（2026-10-07） | 世界状态与三值谓词；技能前置条件、效果确认和不变量；进度和停滞监测；修复→重规划→人工的升级阶梯；Mission 层级分解和按需展开；Embodiment Profile（G1、轮式底盘）与轨道绑定；Windows 文件锁兼容。离线回归 131 项通过（另有 13 项过期测试，见 K9） | [AGENT_LOOP.md](AGENT_LOOP.md)、`tests/test_world_agent.py` |
+| L0 规划层（2026-10-12） | 按 L0 规划层设计重写任务层：TaskPlan 契约与编号规则、目标词汇（原子→世界状态谓词）、输入汇总与规则前后夹检、澄清/重规划/验收、子任务状态机和结果、操作者计划与修订；删除 Mission 分解。离线回归 181 项通过（另有 13 项过期测试，见 K9）；L0 调用路径用本地脚本化模型端点验证；CLI+DBOS 冒烟通过。真实模型 live 测试未运行 | [AGENT_LOOP.md](AGENT_LOOP.md) §6、`tests/test_task_plan.py`、`tests/test_l0.py` |
 
+## 8. 维护规则
 
-上下文隔离与诊断增量：Builder 为各 Provider 隔离嵌套输入，拒绝调用期间的输入修改，并将返回片段与调用方对象分离；规划/重规划 Manifest 保存 Provider 返回、纳入及预算丢弃清单。22 项实际文件/账本回归通过；环境真实 qwen3.7-plus 的目标分析及两次规划均取得有效原始响应，独立 worker 完成文件归档及哈希核验，记忆过期后的命令拒绝执行。证据见 [context-isolation-live.json](validation/context-isolation-live.json)。这不是 Provider 沙箱或完整 Context 序列化迁移；世界状态与机器人验收仍未完成。
-
-
-完整上下文包增量：新增 context_codec.py，提供 ContextBundle v1 编码与严格读取；规划/重规划保存完整包和绑定哈希，并使用解析后的片段生成模型输入。36 项回归通过；环境真实 qwen3.7-plus 完成目标分析和两次规划，两份持久包均能精确重建实际 messages 与 response_format。独立 worker 完成真实文件归档及哈希核验；未知快照版本和提交后快照变化均拒绝。证据见 [context-codec-live.json](validation/context-codec-live.json)。旧模型记录不补造 Bundle，解码不授予执行权限；世界状态和真机验收仍未完成。
-
-
-多文件任务增量：新增内置 asset.verify-set，逐项核对实际资产字节和调用方预期哈希，拒绝重复资产、损坏数据及跨机器人范围。41 项真实文件/账本回归通过；环境真实 qwen3.7-plus 完成目标分析和七节点计划，独立 worker 完成三个复制、三个归档及一次集合核验，随后独立重读六份产物验证哈希。证据见 [multifile-live.json](validation/multifile-live.json)，范围见 [多文件验收](MULTIFILE_VALIDATION.md)。这是一个明确约束的真实任务样本，不代表统计规划质量或真机验收。
-
-
-HTTP fencing 增量：显式控制域、单账本单调令牌、执行端持久权威检查和回执绑定已接通；要求同名独占资源。17 项真实 HTTP/文件/控制回归通过；新增 worker 恢复后第二执行令牌递增验证通过。真实环境 qwen3.7-plus 的目标分析、规划、独立 worker 远端文件执行与哈希核验通过。证据见 [fencing-live.json](validation/fencing-live.json)。旧令牌拒绝保持 Runtime unknown 和资源占用，不冒充停止；机器人驱动、多主仲裁及硬件急停仍未验收。
-
-
-旧执行停止核对增量：当前较新控制者可显式请求 reconcile，服务端调用实际 cancel 并保存停止证据；旧执行只读回取结果后，Runtime 才解除未知状态并按真实终态释放资源。12 项真实 HTTP/控制回归通过，覆盖错误令牌、重复核对和服务重启；真实环境 qwen3.7-plus 的计划实际复制 512 字节后被接管，核对后独立 worker 结束为 canceled，部分字节保留且无成功冒报。证据见 [fencing-reconciliation-live.json](validation/fencing-reconciliation-live.json)。机器人停止、多主仲裁和自动接管仍未完成。
-
-
-事件分页增量：共享 task.events-page 提供任务绑定游标、固定读取上界和 1–500 条分页，保留原 task.events。8 项实际 HTTP/文件回归通过（3 项其他实时模型测试未在该命令中运行）；本轮真实 qwen3.7-plus 七节点文件任务完成后，分页结果与完整账本逐条相等，重复读取不新增模型请求或执行。证据见 [event-pages-live.json](validation/event-pages-live.json)，协议见 [事件分页](EVENT_PAGES.md)。尚未迁移前端或接入推送，不宣称任意历史删改检测。
-
-
-工作台事件增量：已接通任务选择、每页 50 条、手动后续页及读完后的增量轮询；断连保留记录，切换任务/凭据清理旧上下文。真实浏览器验证使用已有实际模型任务的账本副本（17 条事件）及实际暂停/恢复和文件执行产生的 69 条事件，验证两页加载、服务重启、去重及权限上下文清理；浏览器未新增模型或执行记录。构建通过，独立界面审阅对列出的可读性修正给出 ship。证据见 [event-browser-live.json](validation/event-browser-live.json)。本次不增加模型生成或真机验收声明。
-
-
-失败节点解释追溯增量：task.explain 在发送真实模型请求前，原子保存完整 ContextBundle、哈希、来源/预算 Manifest 和请求准备参数；实际缺失文件执行失败后，环境 qwen3.7-plus 返回的解释通过文件名、错误含义及来源引用检查。保存包重建的 messages 与 response_format 和实际请求一致，任务保持 failed。1 项真实模型测试（4 条实际响应）及 23 项实际文件/账本/HTTP 回归通过；证据见 [explanation-context-live.json](validation/explanation-context-live.json)。此范围不包含其他模型方法的统一追溯、旧记录回填、世界状态或真机验收。
-
-
-目标分析与澄清追溯增量：预算预检现在返回完整 ContextBundle，goal_analysis 和 goal_clarification 保留来源诊断，并在网络调用前原子保存 Bundle/哈希、Manifest、实际请求及准备参数；直接调用没有 Provider 时不补造诊断。实际多轮验收发现并修复澄清参数经持久化改变 JSON 键顺序、导致实际提示无法精确重建的问题。普通文件闭环、澄清/失败解释、自动摘要后文件闭环三条通过路径共保存 13 条真实模型响应；23 项实际文件/账本/HTTP 回归通过。首次失败与修复后重验分别保留，见 [goal-context-live.json](validation/goal-context-live.json)。详细边界见 [模型上下文证据](MODEL_CONTEXT_EVIDENCE.md)；摘要/自动化完整 Bundle、世界状态和真机闭环仍未完成。
-
-
-自动诊断上下文包增量：explain_event 已保存完整 ContextBundle v1、哈希与准备参数，并在真实网络调用前同 Manifest、requesting 记录原子提交。上下文只表示绑定的历史事件，不附会当前任务 revision/generation，不补造 Provider 诊断。实际事件诊断、SIGKILL/SIGINT 中断和显式重试共 4 项专项通过，另有 23 项实际文件/账本/HTTP 回归通过；5 条实际响应与原错误一致，2 条中断请求保持 unresolved，7 份输入均准确重建且来源事件哈希与账本一致。证据：[automation-context-live.json](validation/automation-context-live.json)。供应商是否接收中断请求仍未知；摘要完整追溯、世界状态、真机和 Momo 同步仍未完成。
-
-
-会话/恢复摘要追溯增量：每个分块使用 data 权限的 summary-source 片段，完整包、Manifest、来源字符范围/哈希、请求准备参数及实际消息在模型调用前原子保存。分块预检与发送统一构造；恢复摘要绑定原规划快照与任务版本，已有编辑/取消 guard 保留。四条通过路径共 15 条真实模型响应、8 个摘要包；2 项实际文件任务完成哈希验证，1 项取消任务保持 canceled，并发编辑路径拒绝绑定旧摘要。23 项实际文件/账本/HTTP 回归通过。首次测试范围输入缺失及真实规划拒绝均保留，修正真实前置输入后重验相关路径；详见 [summary-context-live.json](validation/summary-context-live.json)。这些记录不代表跨提示版本重放、实时世界状态或真机验收，Momo 同步仍待完成。
-
-
-上下文只读查询增量：观察服务新增 GET /api/v1/models/{id}/context，同一读事务展开已有 Bundle/Manifest，并报告包哈希、引用与 request/phase 关联问题。实际模型账本副本 HTTP 查询、完整读前后对比、缺失/损坏注入与真实旧记录检查通过，相关 7 项测试通过；本轮新增模型调用为 0，没有执行任务。证据：[context-observer-live.json](validation/context-observer-live.json)。该接口不是完整请求重建、Manifest 全文认证或前端页面交付；真机、WorldState、其他工程范围及 Momo 同步仍待完成。
-
-
-### 2026-09-22 上下文差异查询增量
-
-单记录上下文面板已完成真实账本浏览器验证及独立界面审查（ship），见 [context-browser-live.json](validation/context-browser-live.json)。另新增两记录上下文差异只读 API，按明确方向比较身份、来源、内容哈希、预算与诊断，不推断调用血缘；缺失或损坏证据明确不可比较。真实历史模型账本 16 组比较及实际 HTTP/文件/账本回归共 8 项通过，副本故障恢复后逻辑账本哈希与来源一致；无新增模型调用、mock 或仿真。证据：[context-diff-live.json](validation/context-diff-live.json)。双记录比较界面见后续增量；世界状态和设备闭环仍待完成，未同步 Momo 图。
-
-
-### 2026-09-22 上下文双记录比较界面增量
-
-模型记录页面已接入固定/输入/清除基准与明确方向的上下文比较，展示预算、来源、内容哈希、请求身份及诊断变化。切换任一记录清除旧结果，同组合断连保留上次结果并标明过期，缺失或损坏证据显示不可比较。真实浏览器读取 5 条历史模型记录，验证键盘操作、正反向与自身比较、未应用输入隔离、断连/重连、损坏/恢复和桌面/手机布局；无新增模型调用、mock、仿真、页面异常或浏览器写操作，最终账本哈希保持不变。构建通过；独立界面审查 disposition 为 ship、无实质修正，范围仅此增量。证据：[context-diff-browser-live.json](validation/context-diff-browser-live.json)。实体/完成条件契约、世界状态、实际设备闭环及 Momo 同步仍待完成。
-
-
-### 2026-09-22 资产上下文版本绑定增量
-
-新增 AssetBinding v1，session.attach-assets 绑定真实登记记录与字节身份；Provider、草稿发布、提交、worker 接受及新技能派发复核资产。旧非空 ID-only 附件不会自动回填，需要显式重新附加并生成新草稿；历史可读。真实环境 qwen3.7-plus 的 4 条响应输入准确重建，元数据/字节变化分别在提交、命令处理、派发与恢复处被拒；恢复后实际 worker 核验资产字节/大小/哈希通过。专项 1 项、相关回归 37 项通过，无 mock 或仿真。证据：[asset-binding-live.json](validation/asset-binding-live.json)。此引用只代表归档资产，物理实体定位、世界状态和通用完成条件仍未完成；Momo 未同步此增量。
-
-
-### 2026-09-22 显式完成契约增量
-
-新增操作者 v1 completion_contract，独立于模型计划，绑定最终注册 verifier 的输出检查；会话设置会使旧分析/草稿失效，任务接受后冻结，修订与恢复保留契约。Runtime 区分技能 reported_status 与任务 completion_evaluation，实际验收不满足时即使技能成功也记为失败。真实模型+独立 worker 的原文件/规划后实际修改文件两条路径通过：一成功、一按哈希/大小要求失败；通过运行 4 条真实响应均重建输入，首轮退出码断言纠正记录保留（两轮共 8 条响应）。专项 1 项、相关回归 40 项通过，无 mock 或仿真。证据：[completion-contract-live.json](validation/completion-contract-live.json)。契约仍需操作者显式提供，不代表自然语言目标自动覆盖、物理任务指标、世界状态或硬件闭环完成；专用编辑 UI 与 Momo 同步仍待完成。
-
-
-完成契约恢复专项：新增真实模型验收，实际修改主文件导致归档技能成功但任务哈希/大小验收失败；模型接收真实检查差异与冻结要求，改用操作者授权备用文件，独立 worker 完成原字节归档和核验。接受任务后清除当前会话契约不影响恢复要求。三条实际响应输入准确重建，专项 1 项通过、相关回归 40 项通过，无 mock、仿真或生产逻辑改动。证据：[completion-recovery-live.json](validation/completion-recovery-live.json)。范围限一个文件恢复场景；世界状态、物理实体和真机闭环仍未完成。
-
-
-动作发现契约增量：GET /actions 增加 catalog_version 与每动作版本、哈希、副作用类别、幂等/模型调用行为声明；审计记录关联实际使用的契约，发现结果保留独立 schema 副本。仍按基础权限筛选，实际调用继续检查机器人范围和状态。真实 HTTP 发现→提交→独立 worker→文件 SHA256 验收通过，同时覆盖认证、缺失幂等键与跨机器人拒绝；相关 17 项通过，无新增模型调用、mock 或仿真。详情见 [应用层说明](APPLICATION_LAYER.md)。不代表所有嵌套输出 schema、远程多租户、世界状态或真机已完成。
-
-
-世界状态接入复核：实际 ROS 图发现仅检查节点自身诊断发布者，未发现设备节点或 Action；已审阅相邻工程真实 G1 状态/运动桥并归档源码哈希。明确接收时间与采样时间、默认 covariance、坐标/速度语义及执行身份/停止证据缺口，见 [G1 接入契约](G1_INTEGRATION_CONTRACT.md) 和 [发现记录](validation/world-source-discovery.json)。无桥接启动、mock、仿真、运动或新增模型调用；世界状态与真机仍待实际连接信息及现场验收。
-
-跨动作幂等修复：实际复现自动化与会话可重复占用同主体请求键；现统一写事务内的键归属检查，保留历史自动化 ID，冲突返回 409。25 项实际文件/HTTP/账本回归通过；真实自动诊断专项 1 项通过、一次环境模型调用且输入准确重建，旧真实账本重放兼容验证通过。证据：[action-idempotency-live.json](validation/action-idempotency-live.json)。无 mock 或仿真；分布式键归属、世界状态及真机不在本次验收范围。
+1. 每次实现或验收后，更新本文件的日期、对应细项和第 6 节工作队列。**新增量写进第 7 节表格的一行，不要在文末追加段落。**
+2. "已完成"必须给出代码或验证证据，并标明证据等级。只有接口、schema 或研究材料时，不能标为完成。
+3. 已实现但还缺更高等级验收的条目保持"进行中"，并写清已经完成的范围和等级。仿真通过不能关闭实机项。
+4. 新问题先写进 [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)，再在这里加对应状态。
+5. 同步更新 Momo 快照和 `WORKLOG.md`、`DECISIONS.md`、`HANDOFF.md`。
+6. 历史测试报告不因状态更新而改写。

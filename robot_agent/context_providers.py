@@ -30,6 +30,10 @@ CAPABILITY_FIELDS = {
     "cancelable",
     "replay_safe",
     "verifier",
+    # World-facing contract: what must hold before, during and after the skill.
+    "preconditions",
+    "invariants",
+    "effects",
 }
 
 
@@ -156,7 +160,7 @@ class TaskStateProvider:
                     source="runtime_ledger",
                     authority="data",
                     priority=95,
-                    required=request.phase in {"replanning", "subplanning"},
+                    required=request.phase in {"replanning", "subplanning", "repair"},
                 )
             )
         return tuple(fragments)
@@ -246,7 +250,7 @@ class SelectionProvider:
         fragments = []
         if session is not None:
             # Automatic recovery uses current task-state, not an expired UI selection.
-            selection = None if request.context_snapshot_id and request.phase == "replanning" else session.get("selection")
+            selection = None if request.context_snapshot_id and request.phase in {"replanning", "repair"} else session.get("selection")
             if selection:
                 require(selection["expires_at"] > time.time(), "UI selection expired; select the task again")
                 task = store.get("tasks", selection["task_id"])
@@ -262,4 +266,29 @@ class SelectionProvider:
         return tuple(fragments)
 
 
-DEFAULT_PROVIDERS = (GoalCapabilityProvider(), TaskStateProvider(), SessionProvider(), MemoryProvider(), AssetProvider(), SelectionProvider())
+class WorldStateProvider:
+    """CTX-5: current facts for the request's robot, each with validity, frame, age and evidence level."""
+
+    name = "world-state"
+
+    def collect(self, store, inputs):
+        request = inputs.request
+        if not request.robot_id:
+            return ()
+        from .world_state import WorldState
+        snapshot = WorldState(store, request.robot_id).snapshot()
+        if not snapshot["facts"]:
+            return ()
+        return (ContextFragment(
+            id="world-state", kind="world_state", source="world_state_ledger", authority="data", priority=88,
+            required=request.phase in {"repair", "subplanning"},
+            content={**snapshot, "content_authority": "recorded_observations",
+                     "rules": "Only facts with status=observed and validity=valid are current. Expected facts are unconfirmed "
+                              "effects; stale, invalid or missing facts must be observed again before relying on them."},
+            metadata={"as_of_ns": snapshot["as_of_ns"], "map_version": snapshot["map_version"],
+                      "fact_count": len(snapshot["facts"])},
+        ),)
+
+
+DEFAULT_PROVIDERS = (GoalCapabilityProvider(), TaskStateProvider(), SessionProvider(), MemoryProvider(), AssetProvider(),
+                     SelectionProvider(), WorldStateProvider())

@@ -109,6 +109,7 @@ def copy_step(store, operation, execution_id, args, spec):
                     "quiescent": False,
                     "output": {"bytes_copied": job["offset"]},
                     "evidence": [{"source": target.as_uri(), "bytes": job["offset"]}],
+                    "feedback": {"progress": job["offset"] / job["size"], "bytes_copied": job["offset"]},
                 }
     except (OSError, ContractError) as exc:
         result = {

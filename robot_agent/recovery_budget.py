@@ -22,7 +22,7 @@ def fit_recovery(store, task, request):
 
     def guard():
         current = store.get('tasks', task['id'])
-        require(current is not None and current['status'] == 'replanning'
+        require(current is not None and current['status'] in {'replanning', 'repairing'}
                 and (current['revision'], current['generation']) == (request.revision, request.generation),
                 'recovery task changed')
         require(record_hash(store.get('planning_contexts', request.context_snapshot_id)) == snapshot_hash,

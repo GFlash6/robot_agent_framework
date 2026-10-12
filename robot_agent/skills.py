@@ -74,9 +74,23 @@ LOCAL_SPECS = {
 }
 
 
+# In-process skill handlers, keyed by the spec's "handler" name. A handler is
+# handler(operation, execution_id, args, robot_id) -> execution envelope, with
+# operation in {"start", "query", "cancel"}. It must honour the same protocol as
+# an HTTP endpoint: fixed execution IDs, quiescent terminal results, evidence.
+HANDLERS = {}
+
+
+def register_handler(name, handler):
+    require(isinstance(name, str) and name and callable(handler), "handler needs a name and a callable")
+    HANDLERS[name] = handler
+
+
 def validate_spec(name, spec):
     require(isinstance(name, str) and bool(name), "skill name required")
-    require(spec.get("adapter") in {"local", "http"}, "adapter must be local or http")
+    require(spec.get("adapter") in {"local", "http", "inprocess"}, "adapter must be local, http or inprocess")
+    require(spec["adapter"] != "inprocess" or (isinstance(spec.get("handler"), str) and spec["handler"]),
+            "inprocess skills need a handler name")
     if 'fencing_domain' in spec:
         from .fencing import validate_domain
         validate_domain(spec['fencing_domain'])
@@ -111,6 +125,10 @@ def validate_spec(name, spec):
         and 0 < spec.get("execution_timeout", 300) <= 86400,
         "execution timeout must be 0..86400 seconds",
     )
+    from .task_plan import CATEGORIES
+    require(spec.get("category") is None or spec["category"] in CATEGORIES,
+            f"skill category must be one of {sorted(CATEGORIES)}")
+    require(spec.get("summary") is None or isinstance(spec["summary"], str), "skill summary must be text")
     for check in spec.get("checks", []):
         require(
             isinstance(check, dict)
@@ -121,9 +139,11 @@ def validate_spec(name, spec):
         require(
             check["op"] == "nonempty" or "value" in check, "postcondition value missing"
         )
+    from .monitor import validate_monitoring
+    validate_monitoring(spec)
     if spec["adapter"] == "local":
         require(name in LOCAL_SPECS, "unknown local skill")
-    else:
+    elif spec["adapter"] == "http":
         endpoint = urlparse(spec.get("endpoint", ""))
         require(
             endpoint.scheme in {"http", "https"}
@@ -141,7 +161,15 @@ class Skills:
         self.store = store
         self.memory = Memory(store)
 
+    @staticmethod
+    def has_handler(spec):
+        return spec.get("handler") in HANDLERS
+
     def call(self, operation, name, spec, execution_id, args, robot_id, *, authority=None):
+        if spec["adapter"] == "inprocess":
+            handler = HANDLERS.get(spec["handler"])
+            require(handler is not None, f"no in-process handler registered for {spec['handler']}")
+            return handler(operation, execution_id, args, robot_id)
         if spec["adapter"] == "http":
             headers = {}
             if spec.get('fencing_domain'):

@@ -1,6 +1,18 @@
-# 当前交接入口：revision 156
+# 当前交接入口：2026-10-06 方向重排
 
-以下为最新状态，后续旧节仅作历史记录。整体目标进行中，不得标记完成。用户要求不使用 Superpowers、mock、仿真；模型测试必须用环境真实配置，并校验真实输入、响应及实际执行。
+以本节为准，覆盖下文 revision 156 中有关"禁止仿真"和"下一阶段"的内容。
+
+- 目标：面向通用机器人本体的 Agent 系统，五项核心能力为长程拆解、子技能编排、执行监测、回环反馈、世界状态维护。
+- 方向（用户确认）：仿真与实机并行；G1 为首个本体；适配多种本体。仿真允许使用，证据标为 `simulation`，不能关闭实机项；mock 或替身仍不作为验收证据；AI 调用仍用真实模型。
+- 先读 docs/PROJECT_STATUS.md（主线 A–I、支线 S1–S8、已知问题 K1–K8、增量记录表）和 docs/BUILD_ROADMAP.md（P0–P7 加实机轨 R1–R4）。
+- 下一步：P1 工程基线（标准 Linux/WSL 环境、.gitignore、全量回归、CI）→ P2 仿真器选型、Embodiment Profile 和 G1 仿真；R1 等 G1 连接信息。
+- 上下文追溯支线暂停打磨。Momo 图尚未同步本次方向调整。
+
+---
+
+# 历史交接：revision 156
+
+以下为 2026-09-22 状态，仅作历史记录。整体目标进行中，不得标记完成。当时用户要求不使用 Superpowers、mock、仿真（仿真约束已于 2026-10-06 解除）；模型测试必须用环境真实配置，并校验真实输入、响应及实际执行。
 
 Momo 已更新 19 个已有对象，保留 41 对象、90 关系（50 语义关系），没有改变项目边界或删除记录。12 条已应用关系的证据经源码复核更新；历史 session→QA history 删除提案仍保留，图不能报告为全部清理完成。确定性校验记录见 .momo/intake/verified-increments-final-health.json 和 verified-increments-final-validation.json。
 
@@ -71,3 +83,12 @@ Python 离线回归 32 tests / 9 subtests 通过、live model 1 项默认跳过�
 
 
 当前 Momo revision 155，41对象/90关系（50条语义关系）；新增记忆→上下文关系已通过确定性证据校验。历史 session→QA history 移除提案仍保留。
+
+
+## 2026-10-07 当前续接入口
+
+最新状态以 docs/AGENT_LOOP.md 和 docs/PROJECT_STATUS.md 为准。五项能力已有 L0 实现，尚无 L1/L2 证据。
+
+下一步：仿真器选型和 G1 仿真技能适配器（满足 SKILL_PROTOCOL 的世界契约：feedback 和 observations）；对 decomposition 和 repair 方法做真实模型 live 验收；处理 13 项过期测试；Momo 图同步新对象（world state、monitor、missions、embodiment）。
+
+复现（Windows）：创建 venv，安装 pyproject 依赖和 pytest，然后运行 `python -m pytest -q -p no:cacheprovider --basetemp=<短路径> -m "not live_model" --ignore-glob="*_live.py" tests`。临时目录路径要短，否则会碰到 MAX_PATH。

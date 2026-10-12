@@ -53,6 +53,21 @@ PUT 请求增加 `authority` 字段；PUT、GET、POST 都携带 `X-Execution-Au
 实际验证记录见 [fencing-live.json](validation/fencing-live.json)，包含真实模型到远端文件执行及非模型的控制权故障测试范围。
 
 
+## 世界契约
+
+技能可以用世界状态谓词声明可选的 `preconditions`、`invariants`、`effects`，并用 `monitor`（`stall_s`、`min_progress_delta`、`invariant_unknown`）、`precondition_timeout`、`effect_timeout`、`confirm_effects` 调整行为。注册时会校验谓词语法，也会校验谓词引用的参数是否在 `input_schema.properties` 中声明。语义见 [AGENT_LOOP.md](AGENT_LOOP.md)。要点：
+
+- 前置条件为 false 时不派发；
+- 不变量被违反时请求取消，并把结果判为失败；
+- 效果只有在动作结束后、由其他来源的观测确认时才成立。
+
+`evidence_level`（software_integration / simulation / hardware_observation）、`provider`、`embodiment` 由本体绑定填写，并写入每条 execution 记录。
+
+适配器响应可以额外携带两个字段：
+
+- `feedback`：对象，`progress` 为 0–1 的进度。非终态响应中提供它才能做停滞检测；超过 4 KiB 的反馈不保存。
+- `observations`：最多 256 项，每项为 `{key, value, stamp_ns, frame_id?, clock_domain?, confidence?, ttl_s?, map_version?}`。`stamp_ns` 必须换算到账本时钟。Runtime 以该 execution 为来源写入世界状态；格式错误的项目只审计，不影响执行结果。动作技能自己上报的观测不能确认它自己的效果。
+
 ### Runtime 的任务完成契约
 
 操作者可在任务层另外声明最终 verifier 的输出检查。技能返回成功且通过原有输出/停止/证据检查后，Runtime 才核对这些要求。结果上的 reported_status 与 completion_evaluation 是框架审计字段，不是适配器新增的必填返回字段；若任务要求失败，框架记录 failed，同时保留技能实际输出与停止证据。适配器自身的成功标准没有因此被放宽。详见 [完成契约](COMPLETION_CONTRACTS.md)。

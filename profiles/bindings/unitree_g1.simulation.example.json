@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "embodiment": "unitree_g1",
+  "track": "simulation",
+  "provider": "http",
+  "endpoint": "http://127.0.0.1:8770",
+  "timeout": 5,
+  "skills": {
+    "robot.observe_state": {},
+    "robot.stand": {"execution_timeout": 60},
+    "robot.stop": {},
+    "base.move_velocity": {"execution_timeout": 30},
+    "base.navigate_to": {"execution_timeout": 300},
+    "perception.locate_object": {},
+    "manip.pick": {"execution_timeout": 120},
+    "manip.place": {"execution_timeout": 120},
+    "manip.retract": {"execution_timeout": 60},
+    "verify.object_at": {}
+  },
+  "notes": "Example only. Replace provider with the simulator chosen in P2 (isaaclab or mujoco) and point endpoint at its skill adapter, which must implement docs/SKILL_PROTOCOL.md including feedback and observations."
+}

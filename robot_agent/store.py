@@ -2,13 +2,13 @@
 
 import json
 import hashlib
-import fcntl
 import sqlite3
 import threading
 import time
 from contextlib import contextmanager
 from pathlib import Path
 from .contracts import require
+from . import filelock
 
 
 def dumps(value):
@@ -63,11 +63,11 @@ CREATE VIRTUAL TABLE IF NOT EXISTS memory_search USING fts5(id UNINDEXED, text);
         directory.mkdir(exist_ok=True)
         name = hashlib.sha256(task_id.encode()).hexdigest()
         with (directory / name).open("a+") as handle:
-            fcntl.flock(handle, fcntl.LOCK_EX)
+            filelock.lock(handle)
             try:
                 yield
             finally:
-                fcntl.flock(handle, fcntl.LOCK_UN)
+                filelock.unlock(handle)
 
     def put(self, collection, key, value):
         with self.lock:

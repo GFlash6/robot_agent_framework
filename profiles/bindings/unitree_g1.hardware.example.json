@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "embodiment": "unitree_g1",
+  "track": "hardware",
+  "provider": "unitree_sdk",
+  "endpoint": "http://127.0.0.1:8780",
+  "timeout": 5,
+  "skills": {
+    "robot.observe_state": {},
+    "robot.stop": {},
+    "robot.stand": {"fencing": true, "execution_timeout": 60},
+    "base.move_velocity": {"fencing": true, "execution_timeout": 30}
+  },
+  "notes": "Example only; R1-R3 scope. Motion skills are fenced so a stale controller cannot command the body. Bind more skills only after each passes its hardware acceptance. Waiting on G1 connection details (docs/G1_INTEGRATION_CONTRACT.md)."
+}

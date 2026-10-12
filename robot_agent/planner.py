@@ -1,4 +1,7 @@
-"""Planning policy over the reusable model-call boundary."""
+"""L1 orchestration over the reusable model-call boundary: one goal or subtask -> a validated skill DAG.
+
+L0 (task-level planning) lives in l0.py; this module never splits a task into subtasks.
+"""
 
 import json
 import time
@@ -19,28 +22,31 @@ class Planner:
         self.config = config
         self.context_builder = context_builder or ContextBuilder(store)
 
-    def plan(self, goal, catalog, context=None, *, context_request=None, context_session=None):
+    def plan(self, goal, catalog, context=None, *, context_request=None, context_session=None, method="planning"):
+        """Return a validated skill DAG. ``method="repair"`` asks for a minimal local repair."""
+        require(method in {"planning", "repair"}, "unsupported planning method")
+
+        def accept(content):
+            plan = json.loads(content)
+            validate_plan(plan, catalog)
+            final = next(step for step in plan["steps"] if step["id"] == plan["verification"])
+            require(
+                catalog[final["skill"]].get("verifier", False),
+                "model plan must finish with a registered verifier skill",
+            )
+            return plan
+
+        return self._call(method, goal, catalog, accept, "plan", context=context,
+                          context_request=context_request, context_session=context_session)
+
+    def _call(self, method, goal, catalog, accept, result_field, *, context=None, context_request=None,
+              context_session=None):
         require(isinstance(goal, str) and bool(goal.strip()), "goal required")
         # Validate configuration before creating an evidence record, preserving the
         # distinction between a missing configuration and a rejected actual call.
         caller = ModelCaller(self.config)
-        capabilities = {
-            k: {
-                f: v
-                for f, v in spec.items()
-                if f
-                in {
-                    "input_schema",
-                    "output_schema",
-                    "checks",
-                    "resources",
-                    "cancelable",
-                    "replay_safe",
-                    "verifier",
-                }
-            }
-            for k, spec in catalog.items()
-        }
+        from .context_providers import capabilities as capability_view
+        capabilities = capability_view(catalog)
         diagnostics = ()
         encoded_bundle = None
         if context_request is not None:
@@ -69,7 +75,7 @@ class Planner:
             "model": caller.config.model,
             "created_at": time.time(),
             "goal": goal,
-            "method": "planning",
+            "method": method,
             "status": "requesting",
         }
         self.store.put("model_responses", key, record)
@@ -78,7 +84,7 @@ class Planner:
                 self.store.put("context_bundles", key, encoded_bundle)
                 record.update(context_bundle_id=key, context_bundle_hash=record_hash(encoded_bundle))
             prepared = caller.prepare(
-                "planning",
+                method,
                 {"goal": goal, "skills": capabilities},
                 context=fragments,
             )
@@ -124,24 +130,16 @@ class Planner:
                 context_allocation=result.allocation.as_dict(),
             )
             self.store.put("model_responses", key, record)
-            plan = json.loads(result.content)
-            validate_plan(plan, catalog)
-            final = next(
-                step for step in plan["steps"] if step["id"] == plan["verification"]
-            )
-            require(
-                catalog[final["skill"]].get("verifier", False),
-                "model plan must finish with a registered verifier skill",
-            )
+            accepted = accept(result.content)
             record.update(
                 status="validated",
                 response_id=result.response_id,
                 actual_model=result.actual_model,
-                plan=plan,
+                **{result_field: accepted},
             )
             self.store.put("model_responses", key, record)
             self.last_response_id = key
-            return plan
+            return accepted
         except Exception as exc:
             if isinstance(exc, ModelCallError) and exc.response is not None:
                 record.update(
@@ -152,5 +150,5 @@ class Planner:
             record.update(status="rejected", error=type(exc).__name__ + ": " + str(exc))
             self.store.put("model_responses", key, record)
             raise ContractError(
-                f"model planning failed; evidence record {key}: {type(exc).__name__}"
+                f"model {'planning' if method == 'planning' else method} failed; evidence record {key}: {type(exc).__name__}"
             ) from exc

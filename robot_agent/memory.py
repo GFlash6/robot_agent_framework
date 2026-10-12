@@ -89,11 +89,13 @@ class Memory:
             target = self.blobs / digest.hexdigest()
             # Replacement also repairs a corrupted existing blob with identical original content.
             os.replace(staging, target)
-            directory = os.open(self.blobs, os.O_RDONLY)
-            try:
-                os.fsync(directory)
-            finally:
-                os.close(directory)
+            # Windows cannot open a directory for fsync; NTFS journals the rename itself.
+            if os.name != "nt":
+                directory = os.open(self.blobs, os.O_RDONLY)
+                try:
+                    os.fsync(directory)
+                finally:
+                    os.close(directory)
         finally:
             if os.path.exists(staging):
                 os.unlink(staging)

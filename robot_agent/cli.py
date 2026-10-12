@@ -13,7 +13,7 @@ from .actions import Actions, local_principal
 
 
 def read_json(path):
-    return json.loads(Path(path).read_text())
+    return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def parser():
@@ -48,6 +48,72 @@ def parser():
     serve.add_argument("--port", type=int, default=8088)
     runner = sub.add_parser("run")
     runner.add_argument("--until")
+    runner.add_argument("--until-agent-task")
+    body = sub.add_parser("embodiment-install", help="register a body's bound abstract skills for one robot")
+    body.add_argument("profile")
+    body.add_argument("binding")
+    body.add_argument("--robot", required=True)
+    world = sub.add_parser("world", help="show the robot's world state with validity")
+    world.add_argument("--robot", required=True)
+    observe = sub.add_parser("observe", help="record an operator or bridge observation")
+    observe.add_argument("key")
+    observe.add_argument("value", help="JSON value")
+    observe.add_argument("--robot", required=True)
+    observe.add_argument("--source-ref", required=True)
+    observe.add_argument("--source-kind", choices=["operator", "observation"], default="operator")
+    observe.add_argument("--evidence-level", required=True,
+                         choices=["software_integration", "simulation", "hardware_observation"])
+    observe.add_argument("--stamp-ns", type=int)
+    observe.add_argument("--frame")
+    observe.add_argument("--ttl", type=float)
+    observe.add_argument("--confidence", type=float, default=1.0)
+    observe.add_argument("--map-version")
+    mapv = sub.add_parser("map-version", help="declare a new map/TF baseline; older spatial facts need re-observation")
+    mapv.add_argument("version")
+    mapv.add_argument("--robot", required=True)
+    instruct = sub.add_parser("instruct", help="start a task from one user instruction (L0 plans it)")
+    instruct.add_argument("instruction")
+    instruct.add_argument("--robot", required=True)
+    instruct.add_argument("--model-config")
+    instruct.add_argument("--plan", help="operator TaskPlan JSON instead of asking L0")
+    instruct.add_argument("--l1-plans", help="JSON {subtask_id: skill plan} for subtasks without a model")
+    instruct.add_argument("--view", help="JSON {description, keyframe_asset} from the camera interface")
+    instruct.add_argument("--confirm", action="store_true", help="the user already confirmed actions that need it")
+    instruct.add_argument("--priority", type=int, default=0)
+    instruct.add_argument("--max-replans", type=int, default=2)
+    instruct.add_argument("--max-repairs", type=int, default=1)
+    policy = sub.add_parser("policy-set", help="agent-side rules, paradigm skills and map overview for L0")
+    policy.add_argument("policy")
+    policy.add_argument("--robot", required=True)
+    sub.add_parser("agent-tasks")
+    for cmd in ("agent-task-status", "agent-task-cancel", "agent-task-events"):
+        sub.add_parser(cmd).add_argument("task")
+    report = sub.add_parser("agent-task-report", help="task tree, per-step status and benchmark metrics")
+    report.add_argument("task")
+    report.add_argument("--text", action="store_true")
+    say = sub.add_parser("agent-task-say", help="the user answers, confirms or interjects")
+    say.add_argument("task")
+    say.add_argument("text")
+    say.add_argument("--confirm", action="store_true")
+    scene = sub.add_parser("scene-load", help="register static scene objects and regions")
+    scene.add_argument("scene")
+    scene.add_argument("--robot", required=True)
+    scene.add_argument("--evidence-level", required=True,
+                       choices=["software_integration", "simulation", "hardware_observation"])
+    tres_agent = sub.add_parser("agent-task-resolve", help="operator decision for a stuck task")
+    tres_agent.add_argument("task")
+    tres_agent.add_argument("action", choices=["confirm", "retry", "replan", "abort"])
+    tres_agent.add_argument("--subtask")
+    tres_agent.add_argument("--note", default="")
+    tres_agent.add_argument("--value", help="JSON answer when confirming a check or obtain subtask")
+    revise = sub.add_parser("agent-task-revise", help="operator re-plan: a new TaskPlan version")
+    revise.add_argument("task")
+    revise.add_argument("plan")
+    revise.add_argument("--l1-plans")
+    tres = sub.add_parser("task-resolve", help="operator decision for a task waiting on a person")
+    tres.add_argument("task")
+    tres.add_argument("decision", choices=["recover", "fail"])
+    tres.add_argument("--note", default="")
     automation = sub.add_parser("automation-worker", help="run owned event diagnostics independently of execution")
     automation.add_argument("--once", action="store_true")
     automation.add_argument("--scan-only", action="store_true", help="persist pending event jobs without model calls")
@@ -174,7 +240,82 @@ def main(argv=None):
         elif cmd == "run":
             from .durable import run
 
-            result = run(store.root, args.until)
+            result = run(store.root, args.until, args.until_agent_task)
+        elif cmd == "embodiment-install":
+            from .embodiment import install
+
+            result = install(rt, read_json(args.profile), read_json(args.binding), args.robot)
+        elif cmd == "world":
+            from .world_state import WorldState
+
+            result = WorldState(store, args.robot).snapshot()
+        elif cmd == "observe":
+            from .world_state import WorldState
+
+            result = WorldState(store, args.robot).observe(
+                args.key, json.loads(args.value), source={"kind": args.source_kind, "ref": args.source_ref},
+                stamp_ns=args.stamp_ns or time.time_ns(), evidence_level=args.evidence_level,
+                frame_id=args.frame, confidence=args.confidence, ttl_s=args.ttl, map_version=args.map_version)
+            result = result or {"ignored": "older than the current observation"}
+        elif cmd == "map-version":
+            from .world_state import WorldState
+
+            result = {"needs_reverification": WorldState(store, args.robot).set_map_version(args.version)}
+        elif cmd == "instruct":
+            from .task_manager import TaskManager
+
+            result = TaskManager(store, rt).create(
+                args.instruction, args.robot, read_json(args.model_config) if args.model_config else None,
+                plan=read_json(args.plan) if args.plan else None,
+                l1_plans=read_json(args.l1_plans) if args.l1_plans else None,
+                view=read_json(args.view) if args.view else None, confirmed=args.confirm,
+                priority=args.priority, max_replans=args.max_replans, max_repairs=args.max_repairs)
+        elif cmd == "policy-set":
+            from .task_manager import TaskManager
+
+            result = TaskManager(store, rt).set_policy(args.robot, read_json(args.policy))
+        elif cmd == "agent-tasks":
+            result = [{k: t[k] for k in ("id", "robot_id", "instruction", "status", "plan_version", "created_at")}
+                      for t in store.list("agent_tasks")]
+        elif cmd == "agent-task-status":
+            from .task_manager import TaskManager
+
+            result = TaskManager(store, rt).get(args.task)
+        elif cmd == "agent-task-cancel":
+            from .task_manager import TaskManager
+
+            result = TaskManager(store, rt).cancel(args.task)
+        elif cmd == "agent-task-events":
+            result = [{**e, "data": json.loads(e["data"])} for e in store.events("agent_task:" + args.task)]
+        elif cmd == "agent-task-report":
+            from .report import render, task_report
+
+            report = task_report(store, args.task)
+            if args.text:
+                print(render(report))
+                return 0
+            result = report
+        elif cmd == "agent-task-say":
+            from .task_manager import TaskManager
+
+            result = TaskManager(store, rt).say(args.task, args.text, confirm=args.confirm)
+        elif cmd == "agent-task-revise":
+            from .task_manager import TaskManager
+
+            result = TaskManager(store, rt).revise(args.task, read_json(args.plan),
+                                                   read_json(args.l1_plans) if args.l1_plans else None)
+        elif cmd == "scene-load":
+            from .world_state import WorldState
+
+            result = {"facts": WorldState(store, args.robot).load_scene(
+                read_json(args.scene), source_ref="scene:" + Path(args.scene).name, evidence_level=args.evidence_level)}
+        elif cmd == "agent-task-resolve":
+            from .task_manager import TaskManager
+
+            result = TaskManager(store, rt).resolve(args.task, args.action, args.subtask, args.note,
+                                                    json.loads(args.value) if args.value else None)
+        elif cmd == "task-resolve":
+            result = rt.resolve(args.task, args.decision, args.note)
         elif cmd == "agent":
             actions = Actions(store, model_config=read_json(args.model_config))
             session = invoke("session.create", {"robot_id": args.robot, "goal": args.goal,

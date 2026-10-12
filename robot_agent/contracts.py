@@ -154,6 +154,10 @@ def validate_plan(plan, catalog):
         )
         graph[s["id"]] = set(deps)
         require(isinstance(s.get("args", {}), dict), "args must be an object")
+        if "when" in s:
+            # Conditional step: runs only if the world-state predicate holds at dispatch time.
+            from .world_state import validate_predicate
+            validate_predicate(s["when"])
         require(
             type(s.get("retries", 0)) is int and 0 <= s.get("retries", 0) <= 10,
             "retry budget must be 0..10",
@@ -215,6 +219,7 @@ def validate_plan(plan, catalog):
         raise ContractError("cyclic task graph") from exc
     final = plan.get("verification")
     require(final in ids, "final verification step required")
+    require("when" not in by_id[final], "final verification step cannot be conditional")
     ancestors = set()
 
     def visit(k):
